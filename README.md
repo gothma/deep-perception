@@ -5,9 +5,11 @@
 
 
 ## Todo
-
-- Download dataset
-- Define first model for dataset
+* *Download dataset* 
+* Load the data into our current model
+* Listen to YT lectures and read into papers to get a more profund idea of the layers of a convolutional network
+* Define first model for dataset
+* 
 
 ## Ideas
 
