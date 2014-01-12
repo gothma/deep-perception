@@ -8,12 +8,12 @@ require 'optim'
 print '==> define parameters'
 
 -- 4-class problem
-noutputs = 5
+noutputs = 8
 
 -- input dimensions
-nfeats = 1
-width = 20
-height = 20
+nfeats = 3
+width = 50
+height = 50
 ninputs = nfeats*width*height
 
 -- number of hidden units (for MLP only):
