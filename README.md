@@ -3,6 +3,18 @@
 
 *Environment perception using deep learning techniques*
 
+## Repository structure
+
+    |_ data
+    |  |_ images
+    |  |  |_ training
+    |  |     |_ image_2 // KITTI train images are here
+    |  |  |_ testing
+    |  |     |_ image_2 // KITTI Test images are here
+    |  |__labels
+          |_ labels_2 // KITTI Training labels           are here
+    |_ lib // External code is here
+
 
 ## Todo
 * *Download dataset* 
