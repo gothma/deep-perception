@@ -2,7 +2,7 @@
 require 'torch'   -- torch
 require 'image'   -- to visualize the dataset
 require 'nn'      -- provides all sorts of trainable modules/layers
-noutputs = 8
+noutputs = 9
 nfeats = 3
 width = 50
 height = 50
@@ -13,7 +13,7 @@ nhiddens = ninputs / 2
 
 -- hidden units, filter sizes (for ConvNet only):
 nstates = {64,64,128}
-filtsize = 6
+filtsize = 5
 poolsize = 2
 normkernel = image.gaussian1D(7)
 

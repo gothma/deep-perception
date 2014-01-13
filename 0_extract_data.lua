@@ -25,8 +25,11 @@ function _typeToNumber(imgType)
  if imgType == 'Misc' then
    tmResult = 7
  end
- if imgType == 'DontCare' then
+ if imgType == 'Truck' then
    tmResult = 8
+ end
+ if imgType == 'DontCare' then
+   tmResult = 9
  end
  return tmResult
 end
@@ -36,8 +39,8 @@ local patch_w = 50
 local patch_h = 50
 trainData = {
   	      data = torch.DoubleTensor(80256,3,patch_w,patch_h),
-   	      labels = torch.LongStorage(80265), 
-              occluded = torch.LongStorage(80265)
+   	      labels = torch.LongStorage(80265):fill(0), 
+              occluded = torch.LongStorage(80265):fill(0)
 	   }
 
 local cntDt = 0
@@ -64,6 +67,14 @@ for i =0, 7480 do
 end
 
 trainData.data = trainData.data[{{1,cntDt},{},{}}]
-trainData.labels = trainData.labels[{{1,cntDt}}]
-trainData.occluded = trainData.occluded[{{1,cntDt}}]
-torch.save('extracted_data_yuv.t7',trainData)
+tmoccluded = trainData.occluded
+tmlabels = trainData.labels
+
+trainData.labels = torch.LongStorage(cntDt):fill(0)
+trainData.occluded = torch.LongStorage(cntDt):fill(0)
+
+for i = 1, cntDt do 
+  trainData.labels[i] = tmlabels[i]
+  trainData.occluded[i] = tmoccluded[i]     
+end
+  torch.save('extracted_data_yuv.t7',trainData)
