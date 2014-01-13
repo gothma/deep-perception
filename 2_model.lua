@@ -8,19 +8,19 @@ require 'optim'
 print '==> define parameters'
 
 -- 4-class problem
-noutputs = 5
+noutputs = 9
 
 -- input dimensions
-nfeats = 1
-width = 20
-height = 20
+nfeats = 3
+width = 50
+height = 50
 ninputs = nfeats*width*height
 
 -- number of hidden units (for MLP only):
 nhiddens = ninputs / 2
 
 -- hidden units, filter sizes (for ConvNet only):
-nstates = {32,32,64}
+nstates = {64,64,128}
 filtsize = 5
 poolsize = 2
 normkernel = image.gaussian1D(7)
@@ -31,7 +31,7 @@ model = nn.Sequential()
 
 if opt.mode == 'train' then
 
-    if opt.model == 'convnet_happy' then 
+    if opt.model == 'convnet_car' then 
 
 	-- stage 1 : filter bank -> squashing -> L2 pooling -> normalization
 		model:add(nn.SpatialConvolutionMM(nfeats, nstates[1], filtsize, filtsize))
@@ -46,8 +46,8 @@ if opt.mode == 'train' then
 		model:add(nn.SpatialSubtractiveNormalization(nstates[2], normkernel))
 
 		-- stage 3 : standard 2-layer neural network
-		model:add(nn.Reshape(nstates[2]*poolsize*poolsize))
-		model:add(nn.Linear(nstates[2]*poolsize*poolsize, nstates[3]))
+		model:add(nn.Reshape(nstates[2]*noutputs*noutputs))
+		model:add(nn.Linear(nstates[2]*noutputs*noutputs, nstates[3]))
 		model:add(nn.Tanh())
 		model:add(nn.Linear(nstates[3], noutputs)) 
 

@@ -2,17 +2,17 @@
 require 'torch'   -- torch
 require 'image'   -- to visualize the dataset
 require 'nn'      -- provides all sorts of trainable modules/layers
-noutputs = 4
-nfeats = 1
-width = 20
-height = 20
+noutputs = 9
+nfeats = 3
+width = 50
+height = 50
 ninputs = nfeats*width*height
 
 -- number of hidden units (for MLP only):
 nhiddens = ninputs / 2
 
 -- hidden units, filter sizes (for ConvNet only):
-nstates = {32,32,64}
+nstates = {64,64,128}
 filtsize = 5
 poolsize = 2
 normkernel = image.gaussian1D(7)
@@ -22,7 +22,8 @@ normkernel = image.gaussian1D(7)
    model2 = nn.Sequential()
    model3 = nn.Sequential()
 
-   im = torch.DoubleTensor(1,40,40):fill(200);
+   im = torch.DoubleTensor(3,50,50):fill(200);
+
    model1:add(nn.SpatialConvolution(nfeats, nstates[1], filtsize, filtsize))
    model1:add(nn.Tanh())
    model1:add(nn.SpatialLPPooling(nstates[1],2,poolsize,poolsize,poolsize,poolsize))
@@ -35,8 +36,8 @@ normkernel = image.gaussian1D(7)
    model2:add(nn.SpatialSubtractiveNormalization(nstates[2], normkernel))
 
 	-- stage 3 : standard 2-layer neural network
-   model3:add(nn.Reshape(nstates[2]*poolsize*poolsize))
-   model3:add(nn.Linear(nstates[2]*poolsize*poolsize, nstates[3]))
+   model3:add(nn.Reshape(nstates[2]*noutputs*noutputs))
+   model3:add(nn.Linear(nstates[2]*noutputs*noutputs, nstates[3]))
    model3:add(nn.Tanh())
    model3:add(nn.Linear(nstates[3], noutputs)) 
 
