@@ -1,6 +1,11 @@
 require 'image'
 require 'torch'
 require 'lib/kitti_tools'
+require 'xlua'
+
+cmd = torch.CmdLine()
+cmd:option('-size', 7480, 'number of images loaded')
+opt = opt or cmd:parse(arg or {})
 
 function _typeToNumber(imgType)
  tmResult = 0 
@@ -44,8 +49,9 @@ trainData = {
 	   }
 
 local cntDt = 0
-
-for i =0, 7480 do 
+print('Read images')
+for i =0, opt.size do
+  xlua.progress(i, opt.size)
   local img = read_image('data/images/training/image_2' , i)
   local lbltbl = read_labels('data/labels/label_2',i)
   for j = 1,table.getn(lbltbl) do
@@ -73,7 +79,9 @@ tmlabels = trainData.labels
 trainData.labels = torch.LongStorage(cntDt):fill(0)
 trainData.occluded = torch.LongStorage(cntDt):fill(0)
 
-for i = 1, cntDt do 
+print('Write images in t7 format')
+for i = 1, cntDt do
+  xlua.progress(i, cntDt)
   trainData.labels[i] = tmlabels[i]
   trainData.occluded[i] = tmoccluded[i]     
 end
