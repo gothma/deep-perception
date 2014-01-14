@@ -37,10 +37,10 @@
                          detection, needed for p/r curves, higher is better.
 
 ## Todo
-[] Download dataset 
-[] Load the data into our current model
-[] Listen to YT lectures and read into papers to get a more profund idea of the layers of a convolutional network
-[] Define first model for dataset
+- [x] Download dataset 
+- [x] Load the data into our current model
+- [] Listen to YT lectures and read into papers to get a more profund idea of the layers of a convolutional network
+- [] Define first model for dataset
 
 ## Ideas
 
