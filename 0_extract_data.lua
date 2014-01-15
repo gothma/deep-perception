@@ -69,15 +69,10 @@ for i =0, opt.size do
         if yDiff > xDiff then
            emptyImgSub = image.rgb2yuv(emptyImgSub)    
            imgSub = image.rgb2yuv(imgSub)
-           print(emptyImgSub[{{},{1,yDiff},{((yDiff-xDiff) / 2) + 1 ,(yDiff + xDiff) /2}}] :size())
-           print(imgSub:size())
            emptyImgSub[{{},{1,yDiff},{((yDiff-xDiff) / 2) + 1 ,(yDiff + xDiff) /2}}] = imgSub
         elseif xDiff > yDiff then
            emptyImgSub = image.rgb2yuv(emptyImgSub)    
            imgSub = image.rgb2yuv(imgSub)
-           
-           print(emptyImgSub[{{},{(xDiff-yDiff) / 2 ,((xDiff-yDiff)/2)+yDiff },{1,xDiff}}]:size())
-          print( imgSub:size())
            emptyImgSub[{{},{((xDiff-yDiff) / 2) +1 ,(xDiff+yDiff)/2 },{1,xDiff}}] = imgSub
         end
         emptyImgSub = image.scale(emptyImgSub,patch_w,patch_h)
