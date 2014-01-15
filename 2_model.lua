@@ -12,8 +12,8 @@ noutputs = 9
 
 -- input dimensions
 nfeats = 3
-width = 50
-height = 50
+width = 32
+height = 32
 ninputs = nfeats*width*height
 
 -- number of hidden units (for MLP only):
@@ -46,8 +46,8 @@ if opt.mode == 'train' then
 		model:add(nn.SpatialSubtractiveNormalization(nstates[2], normkernel))
 
 		-- stage 3 : standard 2-layer neural network
-		model:add(nn.Reshape(nstates[2]*noutputs*noutputs))
-		model:add(nn.Linear(nstates[2]*noutputs*noutputs, nstates[3]))
+		model:add(nn.Reshape(nstates[2]*filtsize*filtsize))
+		model:add(nn.Linear(nstates[2]*filtsize*filtsize, nstates[3]))
 		model:add(nn.Tanh())
 		model:add(nn.Linear(nstates[3], noutputs)) 
 

@@ -40,8 +40,8 @@ function _typeToNumber(imgType)
 end
 
 
-local patch_w = 50
-local patch_h = 50
+local patch_w = 32
+local patch_h = 32
 trainData = {
   	      data = torch.DoubleTensor(80256,3,patch_w,patch_h),
    	      labels = torch.LongStorage(80265):fill(0), 
@@ -59,12 +59,31 @@ for i =0, opt.size do
     if (lbltbl[j].x2 > lbltbl[j].x1) and (lbltbl[j].y2 > lbltbl[j].y1) then
       if (lbltbl[j].x2 < img:size(3)) and (lbltbl[j].x1 < img:size(3)) and 
         (lbltbl[j].y2 < img:size(2)) and ( lbltbl[j].y1 < img:size(2)) then
+
         local imgSub = image.crop(img,lbltbl[j].x1,lbltbl[j].y1,lbltbl[j].x2,lbltbl[j].y2)
-        imgSub = image.rgb2yuv(imgSub)
-        imgSub = image.scale(imgSub,patch_w,patch_h)
+        yDiff = imgSub:size(2)
+        xDiff = imgSub:size(3) 
+
+        local emptyImgSub = torch.DoubleTensor(imgSub:size(1), math.max(xDiff,yDiff), math.max(xDiff,yDiff)):fill(1)
+
+        if yDiff > xDiff then
+           emptyImgSub = image.rgb2yuv(emptyImgSub)    
+           imgSub = image.rgb2yuv(imgSub)
+           print(emptyImgSub[{{},{1,yDiff},{((yDiff-xDiff) / 2) + 1 ,(yDiff + xDiff) /2}}] :size())
+           print(imgSub:size())
+           emptyImgSub[{{},{1,yDiff},{((yDiff-xDiff) / 2) + 1 ,(yDiff + xDiff) /2}}] = imgSub
+        elseif xDiff > yDiff then
+           emptyImgSub = image.rgb2yuv(emptyImgSub)    
+           imgSub = image.rgb2yuv(imgSub)
+           
+           print(emptyImgSub[{{},{(xDiff-yDiff) / 2 ,((xDiff-yDiff)/2)+yDiff },{1,xDiff}}]:size())
+          print( imgSub:size())
+           emptyImgSub[{{},{((xDiff-yDiff) / 2) +1 ,(xDiff+yDiff)/2 },{1,xDiff}}] = imgSub
+        end
+        emptyImgSub = image.scale(emptyImgSub,patch_w,patch_h)
         imgSlbl = _typeToNumber(lbltbl[j].type)
         cntDt = cntDt + 1
-        trainData.data[cntDt] = imgSub 
+        trainData.data[cntDt] = emptyImgSub 
         trainData.labels[cntDt] = imgSlbl
         trainData.occluded[cntDt] = lbltbl[j].occluded 
       end
@@ -85,4 +104,4 @@ for i = 1, cntDt do
   trainData.labels[i] = tmlabels[i]
   trainData.occluded[i] = tmoccluded[i]     
 end
-  torch.save('extracted_data_yuv.t7',trainData)
+torch.save('extracted_data_yuv.t7',trainData)

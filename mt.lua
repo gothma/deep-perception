@@ -22,7 +22,7 @@ normkernel = image.gaussian1D(7)
    model2 = nn.Sequential()
    model3 = nn.Sequential()
 
-   im = torch.DoubleTensor(3,50,50):fill(200);
+   im = torch.DoubleTensor(3,32,32):fill(200);
 
    model1:add(nn.SpatialConvolution(nfeats, nstates[1], filtsize, filtsize))
    model1:add(nn.Tanh())
@@ -36,8 +36,8 @@ normkernel = image.gaussian1D(7)
    model2:add(nn.SpatialSubtractiveNormalization(nstates[2], normkernel))
 
 	-- stage 3 : standard 2-layer neural network
-   model3:add(nn.Reshape(nstates[2]*noutputs*noutputs))
-   model3:add(nn.Linear(nstates[2]*noutputs*noutputs, nstates[3]))
+   model3:add(nn.Reshape(nstates[2]*filtsize*filtsize))
+   model3:add(nn.Linear(nstates[2]*filtsize*filtsize, nstates[3]))
    model3:add(nn.Tanh())
    model3:add(nn.Linear(nstates[3], noutputs)) 
 
