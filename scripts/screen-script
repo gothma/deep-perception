@@ -1,0 +1,7 @@
+#!/bin/bash
+. ~/.bashrc
+cd $1
+pwd
+ls -l
+th doall.lua
+read
