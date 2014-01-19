@@ -13,7 +13,7 @@ cmd:option('-threads', 2, 'number of threads')
 -- data:
 cmd:option('-size', 'full', 'how many samples do we load: small | full | extra')
 -- model:
-cmd:option('-model', 'convnet_happy', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
+cmd:option('-model', 'convnet_car', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
 -- loss:
 cmd:option('-loss', 'nll', 'type of loss function to minimize: nll | mse | margin')
 -- training:
@@ -26,8 +26,8 @@ cmd:option('-weightDecay', 0, 'weight decay (SGD only)')
 cmd:option('-momentum', 0, 'momentum (SGD only)')
 cmd:option('-t0', 1, 'start averaging at t0 (ASGD only), in nb of epochs')
 cmd:option('-maxIter', 2, 'maximum nb of iterations for CG and LBFGS')
-cmd:option('-trainfile',  'trainsize')
-cmd:option('-testfile',  'testsize')
+cmd:option('-trainfile', 'data/kitti_extended.t7', 'trainsize')
+cmd:option('-testfile', 'data/kitti_valid.t7',  'testsize')
 cmd:option('-epoches', 200, 'the number of the epoches we need to do')
 cmd:option('-type', 'double', 'type: double | float | cuda')
 cmd:option('-network', 'learned_model', 'learned model file name "*.net"')
