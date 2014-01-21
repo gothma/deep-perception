@@ -27,7 +27,9 @@ if  opt.mode == 'train' then
        labels = loaded.labels,--[1],
        size = function() return tesize end
   }
-       
+end
+   
+if opt.mode == 'train' or opt.mode == 'crossval' then   
 
   ---------------------------------------------------------------
   if opt.size == 'full' then
@@ -80,7 +82,8 @@ if  opt.mode == 'train' then
   testMean = testData.data[{ {},1 }]:mean()
   testStd = testData.data[{ {},1 }]:std()
        
-  elseif opt.mode == 'test' then
+elseif opt.mode == 'test' then
+
   local loaded = torch.load(test_file)
   local w_patch = 50
   local h_patch = 50

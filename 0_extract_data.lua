@@ -7,6 +7,7 @@ cmd = torch.CmdLine()
 cmd:option('-size', 7480, 'number of images loaded')
 opt = opt or cmd:parse(arg or {})
 
+-- Tables take strings as index, on false index an error is thown
 _typeTable = {
   Car=1,
   Van=2,
