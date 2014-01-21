@@ -61,11 +61,11 @@ print '==> executing all'
 
 if opt.mode == 'crossval' then
   dofile '0_cross_data.lua'
+end
 
-if opt.mode == 'train' then
+if opt.mode == 'train' or opt.mode == 'crossval' then
 
   dofile '1_data.lua'
-  
   dofile '2_model.lua'
   dofile '3_loss.lua'
   dofile '4_train.lua'
