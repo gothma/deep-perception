@@ -8,45 +8,45 @@ cmd:option('-size', 7480, 'number of images loaded')
 opt = opt or cmd:parse(arg or {})
 
 function _typeToNumber(imgType)
- tmResult = 0 
- if imgType == 'Car' then
-   tmResult = 1 
- end
- if imgType == 'Van' then
-   tmResult = 2 
- end
- if imgType == 'Tram' then
-   tmResult = 3
- end
- if imgType == 'Cyclist' then
-   tmResult = 4 
- end
- if imgType == 'Pedestrian' then
-   tmResult = 5 
- end
- if imgType == 'Person_sitting' then
-   tmResult = 6
- end
- if imgType == 'Misc' then
-   tmResult = 7
- end
- if imgType == 'Truck' then
-   tmResult = 8
- end
- if imgType == 'DontCare' then
-   tmResult = 9
- end
- return tmResult
+  tmResult = 0 
+  if imgType == 'Car' then
+    tmResult = 1 
+  end
+  if imgType == 'Van' then
+    tmResult = 2 
+  end
+  if imgType == 'Tram' then
+    tmResult = 3
+  end
+  if imgType == 'Cyclist' then
+    tmResult = 4 
+  end
+  if imgType == 'Pedestrian' then
+    tmResult = 5 
+  end
+  if imgType == 'Person_sitting' then
+    tmResult = 6
+  end
+  if imgType == 'Misc' then
+    tmResult = 7
+  end
+  if imgType == 'Truck' then
+    tmResult = 8
+  end
+  if imgType == 'DontCare' then
+    tmResult = 9
+  end
+  return tmResult
 end
 
 
 local patch_w = 32
 local patch_h = 32
 trainData = {
-  	      data = torch.DoubleTensor(80256,3,patch_w,patch_h),
-   	      labels = torch.LongStorage(80265):fill(0), 
-              occluded = torch.LongStorage(80265):fill(0)
-	   }
+  data = torch.DoubleTensor(80256,3,patch_w,patch_h),
+  labels = torch.LongStorage(80265):fill(0), 
+  occluded = torch.LongStorage(80265):fill(0)
+}
 
 local cntDt = 0
 print('Read images')

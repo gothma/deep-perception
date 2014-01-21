@@ -31,8 +31,9 @@ cmd:option('-testfile', 'data/kitti_valid.t7',  'testsize')
 cmd:option('-epoches', 200, 'the number of the epoches we need to do')
 cmd:option('-type', 'double', 'type: double | float | cuda')
 cmd:option('-network', 'learned_model', 'learned model file name "*.net"')
-cmd:option('-mode', 'train', ' the operation mode type : train| test')
-cmd:option('-crossval', false, ' if it is true it will do k fold cross validation')
+cmd:option('-mode', 'train', ' the operation mode type : train | test | crossval')
+cmd:option('-fold', 0, 'fold which is used for testing')
+cmd:option('-folds', 0, 'if set it will do k fold cross validation')
 cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')
 cmd:text('-k',10,'set numbero of folding in cross validation deafult is 10')
 opt = cmd:parse(arg or {})
@@ -49,8 +50,18 @@ end
 torch.setnumthreads(opt.threads)
 torch.manualSeed(opt.seed)
 
+if opt.mode == 'crossval' and opt.fold >= opt.folds then
+  print 'The fold selected for validation needs \
+  to be in the number of total folds'
+  os.exit()
+end
+
 ----------------------------------------------------------------------
 print '==> executing all'
+
+if opt.mode == 'crossval' then
+  dofile '0_cross_data.lua'
+
 if opt.mode == 'train' then
 
   dofile '1_data.lua'
@@ -83,5 +94,6 @@ elseif opt.mode == 'test'  then
   dofile '1_data.lua'
   dofile '2_model.lua'
   dofile '5_test.lua'
-  test() 
+  test()
+
 end

@@ -46,7 +46,8 @@ local hold_back_counter = torch.LongStorage(9):fill(0)
 local val_cnt = 0
 local i = 0
 
-for j= 1, tmdatanum do 
+for j= 1, tmdatanum do
+  xlua.progress(j, tmdatanum)
   img = trainData.data[j]
   imgM = image.hflip(img)
   imgLbl = trainData.labels[j]
@@ -78,5 +79,7 @@ trainData.data = dataTen--[{{2000,4000},{},{},{}}]
 trainData.labels = labelTen--[{{2000,4000}}]
 --------------------------------------------
 
-torch.save('kitti_extended.t7', trainData)
-torch.save('kitti_valid.t7', validationData)
+if opt.mode ~= 'crossval' then
+  torch.save('kitti_extended.t7', trainData)
+  torch.save('kitti_valid.t7', validationData)
+end

@@ -12,100 +12,86 @@ test_file = opt.testfile
 
 if  opt.mode == 'train' then
 ----------------------------------------------------------------------
-	print '==> loading dataset'
+  print '==> loading dataset'
 
-	local loaded = torch.load(train_file)
-	trainData = {
-	   data = loaded.data:double(),--:transpose(3,4),
-	   labels = loaded.labels,--[1],
-	   size = function() return trsize end
-	}
+  local loaded = torch.load(train_file)
+  trainData = {
+     data = loaded.data:double(),--:transpose(3,4),
+     labels = loaded.labels,--[1],
+     size = function() return trsize end
+  }
 
- 	loaded = torch.load(test_file)
-	testData = {
-	     data = loaded.data,--:transpose(3,4),
-	     labels = loaded.labels,--[1],
-	     size = function() return tesize end
-   	}
+  loaded = torch.load(test_file)
+  testData = {
+       data = loaded.data,--:transpose(3,4),
+       labels = loaded.labels,--[1],
+       size = function() return tesize end
+  }
        
 
-        ---------------------------------------------------------------
-	if opt.size == 'full' then
-	   trsize = trainData.data:size(1)
-	   tesize = testData.data:size(1) 
-	elseif opt.size == 'small' then
-	   trsize = 999
-	   tesize = 300
-	end 
-        channels = {'y','u','v'}
-        mean = {}
-        std = {}
-	---------------------------------------------------------------------
-	print '==> preprocessing data'
+  ---------------------------------------------------------------
+  if opt.size == 'full' then
+     trsize = trainData.data:size(1)
+     tesize = testData.data:size(1) 
+  elseif opt.size == 'small' then
+     trsize = 999
+     tesize = 300
+  end 
+  channels = {'y','u','v'}
+  mean = {}
+  std = {}
+  ---------------------------------------------------------------------
+  print '==> preprocessing data'
 
-	trainData.data = trainData.data:float()
-	testData.data = testData.data:float()
+  trainData.data = trainData.data:float()
+  testData.data = testData.data:float()
 
-	print '==> preprocessing data: normalize each feature (channel) globally'
+  print '==> preprocessing data: normalize each feature (channel) globally'
        
-        for i,channel in ipairs(channels) do
-	  mean[i] = trainData.data[{ {},i,{},{} }]:mean()
-  	  std[i] = trainData.data[{ {},i,{},{} }]:std()
-	  trainData.data[{ {},i,{},{} }]:add(-mean[i])
-	  trainData.data[{ {},i,{},{} }]:div(std[i])
-        end
+  for i,channel in ipairs(channels) do
+    mean[i] = trainData.data[{ {},i,{},{} }]:mean()
+    std[i] = trainData.data[{ {},i,{},{} }]:std()
+    trainData.data[{ {},i,{},{} }]:add(-mean[i])
+    trainData.data[{ {},i,{},{} }]:div(std[i])
+  end
 
-        for i,channel in ipairs(channels) do 
-	  testData.data[{ {},i,{},{} }]:add(-mean[i])
-          testData.data[{ {},i,{},{} }]:div(std[i])
-        end
+  for i,channel in ipairs(channels) do 
+    testData.data[{ {},i,{},{} }]:add(-mean[i])
+    testData.data[{ {},i,{},{} }]:div(std[i])
+  end
 
-	print '==> preprocessing data: normalize all three channels locally'
+  print '==> preprocessing data: normalize all three channels locally'
 
-	neighborhood = image.gaussian1D(13)
-  	normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
+  neighborhood = image.gaussian1D(13)
+  normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
 
-        for c in ipairs(channels) do
- 	  for i = 1,trainData.data:size(1) do
-	   trainData.data[{ i,{c},{},{} }] = normalization:forward(trainData.data[{ i,{c},{},{} }])
-	  end
-	  for i = 1,testData.data:size(1) do
-	    testData.data[{ i,{c},{},{} }] = normalization:forward(testData.data[{ i,{c},{},{} }])
-	  end
-        end
+  for c in ipairs(channels) do
+    for i = 1,trainData.data:size(1) do
+     trainData.data[{ i,{c},{},{} }] = normalization:forward(trainData.data[{ i,{c},{},{} }])
+    end
+    for i = 1,testData.data:size(1) do
+      testData.data[{ i,{c},{},{} }] = normalization:forward(testData.data[{ i,{c},{},{} }])
+    end
+  end
 
-	 
+  trainMean = trainData.data[{ {},1 }]:mean()
+  trainStd = trainData.data[{ {},1 }]:std()
 
-	trainMean = trainData.data[{ {},1 }]:mean()
-	trainStd = trainData.data[{ {},1 }]:std()
-
-	testMean = testData.data[{ {},1 }]:mean()
-	testStd = testData.data[{ {},1 }]:std()
-
-	--print('training data mean: ' .. trainMean)
-	--print('training data standard deviation: ' .. trainStd)
-	--print('test data mean: ' .. testMean)
-	--print('test data standard deviation: ' .. testStd)
-
-	----------------------------------------------------------------------
-        print '==> visualizing data'
-
-	 
-    --    first256Samples_y = trainData.data[{ {1,265},1 }]
-    --	image.display{image=first256Samples_y, nrow=16, legend='Some training examples '}
+  testMean = testData.data[{ {},1 }]:mean()
+  testStd = testData.data[{ {},1 }]:std()
        
-elseif opt.mode == 'test' then
- local loaded = torch.load(test_file)
- local w_patch = 50
- local h_patch = 50
- local cntTotal = 0 
- l_tbl = table.getn(loaded)
- testData = {data = torch.DoubleTensor(l_tbl,1,1,20,20),
+  elseif opt.mode == 'test' then
+  local loaded = torch.load(test_file)
+  local w_patch = 50
+  local h_patch = 50
+  local cntTotal = 0 
+  l_tbl = table.getn(loaded)
+  testData = {data = torch.DoubleTensor(l_tbl,1,1,20,20),
             -- labels = torch.DoubleTensor(l_tbl , 1),
              size = function() return tesize end,
              locations = torch.DoubleTensor(l_tbl,1,5)}
- print(table.getn(loaded)) 
- for t = 1, table.getn(loaded) do 
+  print(table.getn(loaded)) 
+  for t = 1, table.getn(loaded) do 
    local ts= loaded[t][1]
    local cnt = 0
    local cntTotal = 0   
@@ -129,39 +115,39 @@ elseif opt.mode == 'test' then
    cntTotal = cntTotal + cnt
    print(' cnttotal ' .. cntTotal)
    testData.data:resize(l_tbl,n + cnt,1,20,20)
-   --testData.labels:resize(n + cnt):fill(0)
-   testData.locations:resize(l_tbl, n + cnt,5)
-   indx = 0
-   if n ==1 then 
-     indx = -1
-   end
-   for i=1,tmData:size(1) do
-     if tmData[i]:max() > 0 then
-       indx = indx + 1  
-       testData.data[t][n + indx][1] = tmData[i]
-       testData.locations[t][n + indx]=tmLoc[i]
-     end
-   end 
- end 
- tesize = l_tbl;
+    --testData.labels:resize(n + cnt):fill(0)
+    testData.locations:resize(l_tbl, n + cnt,5)
+    indx = 0
+    if n ==1 then 
+      indx = -1
+    end
+    for i=1,tmData:size(1) do
+      if tmData[i]:max() > 0 then
+        indx = indx + 1  
+        testData.data[t][n + indx][1] = tmData[i]
+        testData.locations[t][n + indx]=tmLoc[i]
+      end
+    end 
+  end 
+  tesize = l_tbl;
 
- local mean = testData.data[{{}, {},1,{},{} }]:mean()
- local std = testData.data[{{}, {},1,{},{} }]:std()
- testData.data[{{}, {},1,{},{} }]:add(-mean)
- testData.data[{{}, {},1,{},{} }]:div(std)
- testData.data = testData.data:float() 
- print '==> preprocessing data: normalize all three channels locally'
- neighborhood = image.gaussian1D(13)
- normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
- for i = 1,testData.data:size(1) do
-   for j = 1,testData.data:size(1) do
-     testData.data[{ i,j,{},{},{} }] = normalization:forward(testData.data[{ i,j,{},{},{} }])
-   end
- end
- 
+  local mean = testData.data[{{}, {},1,{},{} }]:mean()
+  local std = testData.data[{{}, {},1,{},{} }]:std()
+  testData.data[{{}, {},1,{},{} }]:add(-mean)
+  testData.data[{{}, {},1,{},{} }]:div(std)
+  testData.data = testData.data:float() 
+  print '==> preprocessing data: normalize all three channels locally'
+  neighborhood = image.gaussian1D(13)
+  normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
+  for i = 1,testData.data:size(1) do
+    for j = 1,testData.data:size(1) do
+      testData.data[{ i,j,{},{},{} }] = normalization:forward(testData.data[{ i,j,{},{},{} }])
+    end
+  end
 
 
- print("test mode data size") 
- print(testData:size())
+
+  print("test mode data size") 
+  print(testData:size())
 end
 
