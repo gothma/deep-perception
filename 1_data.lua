@@ -2,7 +2,8 @@
 
 require 'torch' 
 require 'image'  
-require 'nn'     
+require 'nn'
+require 'xlua'
 
 if  opt.mode == 'train' then
 ----------------------------------------------------------------------
@@ -65,9 +66,11 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 
   for c in ipairs(channels) do
     for i = 1,trainData.data:size(1) do
+     xlua.progress(i, trainData.data:size(1))
      trainData.data[{ i,{c},{},{} }] = normalization:forward(trainData.data[{ i,{c},{},{} }])
     end
     for i = 1,testData.data:size(1) do
+      xlua.progress(i, testData.data:size(1))
       testData.data[{ i,{c},{},{} }] = normalization:forward(testData.data[{ i,{c},{},{} }])
     end
   end

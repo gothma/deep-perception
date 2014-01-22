@@ -120,7 +120,6 @@ else
     size = function() return tesize end
   }
 
-
   -- copy and distort data
   local testCounter = 1
   local trainCounter = 1
@@ -139,6 +138,8 @@ else
 
       trainData.data[trainCounter] = image.hflip(loaded.data[j])
       trainData.labels[trainCounter] = loaded.labels[j]
+
+      trainCounter = trainCounter + 1
     end
   end
 
