@@ -1,6 +1,7 @@
 require 'image'
 require 'torch'
 require 'nn'
+require 'xlua'
 
 function _disturb(instance, chance)
   disturbed_instance = torch.Tensor():resizeAs(instance):copy(instance)
