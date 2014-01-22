@@ -96,14 +96,12 @@ else
   local numTrain = 
     math.floor(((opt.folds - 1) / opt.folds) * numPatches) + freeFolds
   local numTest = math.floor(numPatches / opt.folds)
-  if freeFolds <= opt.fold then
+  if freeFolds >= opt.fold then
     numTest = numTest + 1
     numTrain = numTrain - 1
   end
 
   numTrain = numTrain * 2 -- number of added distortions
-
-
   -- define new data arrays
   local s = loaded.data:size()
   s[1] = numTrain
