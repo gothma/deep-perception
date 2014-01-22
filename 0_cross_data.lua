@@ -93,7 +93,7 @@ else
   -- calculate sizes
   local numPatches = loaded.data:size(1)
 
-  if opt and opt.size == 'small' do
+  if opt and opt.size == 'small' then
     numPatches = 1000
   end
 

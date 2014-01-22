@@ -29,7 +29,7 @@ normkernel = image.gaussian1D(7)
 print '==> construct model'
 model = nn.Sequential()
 
-if opt.mode == 'train' then
+if opt.mode == 'train' or opt.mode == 'crossval' then
 
     if opt.model == 'convnet_car' then 
 
