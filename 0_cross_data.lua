@@ -17,8 +17,8 @@ function _disturb(instance, chance)
 end
 
 print '==> loading dataset'
-
-local loaded = torch.load('extracted_data_yuv.t7')
+if not opt then opt = {extractfile='extracted_data_yuv.t7'} end
+local loaded = torch.load(opt.extractfile)
 
 if not opt or opt.mode ~= 'crossval' then
 
