@@ -127,18 +127,18 @@ else
 
   for j = 1, numPatches do
     xlua.progress(j, numPatches)
-    if j % opt.folds == opt.fold - 1 then
-      testData.data[testCounter] = loaded.data[i]
-      testData.labels[testCounter] = loaded.labels[i] 
+    if (j % opt.folds) == (opt.fold - 1) then
+      testData.data[testCounter] = loaded.data[j]
+      testData.labels[testCounter] = loaded.labels[j] 
       testCounter = testCounter + 1
     else
-      trainData.data[trainCounter] = loaded.data[i]
-      trainData.labels[trainCounter] = loaded.labels[i]
+      trainData.data[trainCounter] = loaded.data[j]
+      trainData.labels[trainCounter] = loaded.labels[j]
 
       trainCounter = trainCounter + 1
 
-      trainData.data[trainCounter] = image.hflip(loaded.data[i])
-      trainData.labels[trainCounter] = loaded.labels[i]
+      trainData.data[trainCounter] = image.hflip(loaded.data[j])
+      trainData.labels[trainCounter] = loaded.labels[j]
     end
   end
 
