@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "-->Stage 1"
+PC=`printf tfpool%02d $1`
+echo "--> Try to connect to $PC"
+ssh -t $PC ./run_config
+

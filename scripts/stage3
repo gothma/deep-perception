@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "Stage 3"
+. ~/.bashrc
+cd $1
+th doall.lua
+read

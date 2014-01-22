@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#Parameters
+TORCH=th
+WD=~/dp-checkout
+
+echo "--> Stage 2"
+echo "--> Load latest config from github"
+if [ -d $WD ]; then
+svn up $WD
+else
+svn checkout https://github.com/gothma/deep-perception $WD; ln -s /home/gothm/data $WD/trunk/data
+fi
+
+echo "--> Run config"
+screen ./screen-script $WD/trunk
+echo "--> Successully started config on `hostname`"
+
+

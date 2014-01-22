@@ -7,46 +7,26 @@ cmd = torch.CmdLine()
 cmd:option('-size', 7480, 'number of images loaded')
 opt = opt or cmd:parse(arg or {})
 
-function _typeToNumber(imgType)
- tmResult = 0 
- if imgType == 'Car' then
-   tmResult = 1 
- end
- if imgType == 'Van' then
-   tmResult = 2 
- end
- if imgType == 'Tram' then
-   tmResult = 3
- end
- if imgType == 'Cyclist' then
-   tmResult = 4 
- end
- if imgType == 'Pedestrian' then
-   tmResult = 5 
- end
- if imgType == 'Person_sitting' then
-   tmResult = 6
- end
- if imgType == 'Misc' then
-   tmResult = 7
- end
- if imgType == 'Truck' then
-   tmResult = 8
- end
- if imgType == 'DontCare' then
-   tmResult = 9
- end
- return tmResult
-end
-
+-- Tables take strings as index, on false index an error is thown
+_typeTable = {
+  Car=1,
+  Van=2,
+  Tram=3,
+  Cyclist=4,
+  Pedestrian=5,
+  Person_sitting=6,
+  Misc=7,
+  Truck=8,
+  DontCare=9
+}
 
 local patch_w = 32
 local patch_h = 32
 trainData = {
-  	      data = torch.DoubleTensor(80256,3,patch_w,patch_h),
-   	      labels = torch.LongStorage(80265):fill(0), 
-              occluded = torch.LongStorage(80265):fill(0)
-	   }
+  data = torch.DoubleTensor(80256,3,patch_w,patch_h),
+  labels = torch.LongStorage(80265):fill(0), 
+  occluded = torch.LongStorage(80265):fill(0)
+}
 
 local cntDt = 0
 print('Read images')
@@ -69,19 +49,14 @@ for i =0, opt.size do
         if yDiff > xDiff then
            emptyImgSub = image.rgb2yuv(emptyImgSub)    
            imgSub = image.rgb2yuv(imgSub)
-           print(emptyImgSub[{{},{1,yDiff},{((yDiff-xDiff) / 2) + 1 ,(yDiff + xDiff) /2}}] :size())
-           print(imgSub:size())
            emptyImgSub[{{},{1,yDiff},{((yDiff-xDiff) / 2) + 1 ,(yDiff + xDiff) /2}}] = imgSub
         elseif xDiff > yDiff then
            emptyImgSub = image.rgb2yuv(emptyImgSub)    
            imgSub = image.rgb2yuv(imgSub)
-           
-           print(emptyImgSub[{{},{(xDiff-yDiff) / 2 ,((xDiff-yDiff)/2)+yDiff },{1,xDiff}}]:size())
-          print( imgSub:size())
            emptyImgSub[{{},{((xDiff-yDiff) / 2) +1 ,(xDiff+yDiff)/2 },{1,xDiff}}] = imgSub
         end
         emptyImgSub = image.scale(emptyImgSub,patch_w,patch_h)
-        imgSlbl = _typeToNumber(lbltbl[j].type)
+        imgSlbl = _typeTable[lbltbl[j].type]
         cntDt = cntDt + 1
         trainData.data[cntDt] = emptyImgSub 
         trainData.labels[cntDt] = imgSlbl

@@ -13,7 +13,7 @@ cmd:option('-threads', 2, 'number of threads')
 -- data:
 cmd:option('-size', 'full', 'how many samples do we load: small | full | extra')
 -- model:
-cmd:option('-model', 'convnet_happy', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
+cmd:option('-model', 'convnet_car', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
 -- loss:
 cmd:option('-loss', 'nll', 'type of loss function to minimize: nll | mse | margin')
 -- training:
@@ -26,14 +26,15 @@ cmd:option('-weightDecay', 0, 'weight decay (SGD only)')
 cmd:option('-momentum', 0, 'momentum (SGD only)')
 cmd:option('-t0', 1, 'start averaging at t0 (ASGD only), in nb of epochs')
 cmd:option('-maxIter', 2, 'maximum nb of iterations for CG and LBFGS')
-cmd:option('-trainfile',  'trainsize')
-cmd:option('-testfile',  'testsize')
+cmd:option('-trainfile', 'data/kitti_extended.t7', 'Where the trainfile lies')
+cmd:option('-testfile', 'data/kitti_valid.t7',  'Where the testfile lies')
+cmd:option('-extractfile', 'data/extracted_data_yuv.t7', 'Where the extracted data lies')
 cmd:option('-epoches', 200, 'the number of the epoches we need to do')
 cmd:option('-type', 'double', 'type: double | float | cuda')
 cmd:option('-network', 'learned_model', 'learned model file name "*.net"')
-cmd:option('-mode', 'train', ' the operation mode type : | train| test')
-cmd:option('-crossval', false, ' if it is true it will do k fold cross validation')
-cmd:option('-crossval', false, ' if it is true it will do k fold cross validation')
+cmd:option('-mode', 'train', ' the operation mode type : train | test | crossval')
+cmd:option('-fold', 0, 'fold which is used for testing')
+cmd:option('-folds', 0, 'if set it will do k fold cross validation')
 cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')
 cmd:text('-k',10,'set numbero of folding in cross validation deafult is 10')
 opt = cmd:parse(arg or {})
@@ -50,12 +51,22 @@ end
 torch.setnumthreads(opt.threads)
 torch.manualSeed(opt.seed)
 
+if opt.mode == 'crossval' and opt.fold >= opt.folds then
+  print 'The fold selected for validation needs \
+  to be in the number of total folds'
+  os.exit()
+end
+
 ----------------------------------------------------------------------
 print '==> executing all'
-if opt.mode == 'train' then
+
+if opt.mode == 'crossval' then
+  dofile '0_cross_data.lua'
+end
+
+if opt.mode == 'train' or opt.mode == 'crossval' then
 
   dofile '1_data.lua'
-  
   dofile '2_model.lua'
   dofile '3_loss.lua'
   dofile '4_train.lua'
@@ -84,5 +95,6 @@ elseif opt.mode == 'test'  then
   dofile '1_data.lua'
   dofile '2_model.lua'
   dofile '5_test.lua'
-  test() 
+  test()
+
 end
