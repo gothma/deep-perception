@@ -4,15 +4,11 @@ require 'torch'
 require 'image'  
 require 'nn'     
 
-----------------------------------------------------------------------
-
-train_file = opt.trainfile 
-test_file = opt.testfile 
-
-
 if  opt.mode == 'train' then
 ----------------------------------------------------------------------
   print '==> loading dataset'
+  train_file = opt.trainfile 
+  test_file = opt.testfile 
 
   local loaded = torch.load(train_file)
   trainData = {

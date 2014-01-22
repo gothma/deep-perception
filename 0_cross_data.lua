@@ -2,8 +2,6 @@ require 'image'
 require 'torch'
 require 'nn'
 
-if not opt then
-
 function _disturb(instance, chance)
   disturbed_instance = torch.Tensor():resizeAs(instance):copy(instance)
   for y=2,instance:size(1)-1 do
@@ -86,7 +84,9 @@ if not opt or opt.mode ~= 'crossval' then
 
   torch.save('kitti_extended.t7', trainData)
   torch.save('kitti_valid.t7', validationData)
+
 else
+  print('==> Distort and divide up into ' .. opt.folds .. ' folds')
   -- data seperation using cross validation
 
   -- calculate sizes
@@ -140,8 +140,5 @@ else
       trainData.labels[trainCounter] = loaded.labels[i]
     end
   end
-
-end
-
 
 end
