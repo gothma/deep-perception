@@ -5,12 +5,14 @@ require 'xlua'
 
 cmd = torch.CmdLine()
 cmd:option('-size', 7480, 'number of images loaded')
-cmd:option('-mode', 'multi', 'which classes should be extracted (multi | binary)')
+cmd:option('-class', 'multi', 'which classes should be extracted (multi | binary )')
+cmd:option('-simpleExtraction', false, 'if none patches should be found without knowing if they contain an object')
 cmd:option('-length', 32, 'side length of one patch')
 cmd:option('-crop', 'bars', 'type of image cropping')
 cmd:option('-images', 'data/images/training/image_2', 'folder containing kitti images')
 cmd:option('-labels', 'data/labels/label_2', 'folder containing kitti labels')
 cmd:option('-dontcare', false, 'include DontCare labels')
+cmd:option('-save', 'extracted_data_yuv.t7', 'the file where the images should be saved')
 
 opt = opt or cmd:parse(arg or {})
 
@@ -29,17 +31,24 @@ _typeTable = {
 
 local patch_w = opt.length
 local patch_h = opt.length
-trainData = {
-  data = torch.DoubleTensor(80256,3,patch_w,patch_h),
-  labels = torch.LongStorage(80265):fill(0), 
-  occluded = torch.LongStorage(80265):fill(0)
-}
+local totalPatches = 80256
+if opt.class == 'binary' then
+  -- In the binary case, there is at most for each total patch a none patch
+  totalPatches = totalPatches * 2
+end
 
+trainData = {
+  data = torch.DoubleTensor(totalPatches,3,patch_w,patch_h),
+  labels = torch.LongStorage(totalPatches):fill(0), 
+  occluded = torch.LongStorage(totalPatches):fill(0)
+}
 local resize = {
   bars=function (imgSub) 
     yDiff = imgSub:size(2)
     xDiff = imgSub:size(3) 
-
+    if xDiff == yDiff then
+      return image.scale(imgSub, patch_w, patch_h)
+    end
     local emptyImgSub = torch.DoubleTensor(imgSub:size(1), math.max(xDiff,yDiff), math.max(xDiff,yDiff)):fill(0.5)
     if yDiff > xDiff then
       emptyImgSub[{{},{1,yDiff},{((yDiff-xDiff) / 2) + 1 ,(yDiff + xDiff) /2}}] = imgSub
@@ -54,10 +63,19 @@ local resize = {
   end
 }
 
+function isInside(imgX, imgY, x1, y1, x2, y2)
+  return x1 >= 1 and y1 >= 1 and x2 <= imgX and y2 <= imgY
+end
+
+
 local cntDt = 0
 print('Read images')
+
+
+local binaryClass = opt.class == 'binary'
+
 for i =0, opt.size do
-  xlua.progress(i, opt.size)
+  --xlua.progress(i, opt.size)
   local img = read_image(opt.images , i)
   local lbltbl = read_labels(opt.labels,i)
   for j = 1,table.getn(lbltbl) do
@@ -66,16 +84,59 @@ for i =0, opt.size do
       if (lbltbl[j].x2 > lbltbl[j].x1) and (lbltbl[j].y2 > lbltbl[j].y1) then
         if (lbltbl[j].x2 < img:size(3)) and (lbltbl[j].x1 < img:size(3)) and 
           (lbltbl[j].y2 < img:size(2)) and ( lbltbl[j].y1 < img:size(2)) then
-
+          -- TODO: Does this take 0-based index into account?
           local imgSub = image.crop(img,lbltbl[j].x1,lbltbl[j].y1,lbltbl[j].x2,lbltbl[j].y2)
           -- Add new resize function into the resize table and call them via the parameters
           local emptyImgSub = resize[opt.crop](imgSub)
           --emptyImgSub = image.rgb2yuv(emptyImgSub)
-          imgSlbl = _typeTable[lbltbl[j].type]
+
+          if binaryClass then imgSlbl = 1
+          else imgSlbl = _typeTable[lbltbl[j].type] end
+
           cntDt = cntDt + 1
           trainData.data[cntDt] = emptyImgSub 
           trainData.labels[cntDt] = imgSlbl
-          trainData.occluded[cntDt] = lbltbl[j].occluded 
+          trainData.occluded[cntDt] = lbltbl[j].occluded
+
+          if binaryClass then
+            local imgSize = {x=img:size(3), y=img:size(2)}
+            local patchPos = {
+              x1=lbltbl[j].x1,
+              y1=lbltbl[j].y1,
+              x2=lbltbl[j].x2,
+              y2=lbltbl[j].y2
+            }
+
+            local leftHalf = imgSize.x > patchPos.x2 + patchPos.x1
+            local upperHalf = imgSize.y > patchPos.y2 + patchPos.x1
+
+            local smallerSide = math.max(patchPos.x2 - patchPos.x1, patchPos.y2 - patchPos.y1)
+
+            local noneImage = torch.DoubleTensor()
+            --print(leftHalf, upperHalf)
+            if leftHalf then
+              if upperHalf then
+                -- Image is mostly in left upper quater
+                noneImage = image.crop(img, patchPos.x2, patchPos.y2, math.min(imgSize.x, patchPos.x2 + smallerSide), math.min(imgSize.y, (patchPos.y2 + smallerSide)))
+              else
+                -- Image is mostly in left lower quater
+                noneImage = image.crop(img, patchPos.x2, math.max(0, patchPos.y1-smallerSide), math.min(imgSize.x, patchPos.x2 + smallerSide), patchPos.y1)
+              end
+            else
+              if upperHalf then
+                -- Image is mostly in right upper quater
+                noneImage = image.crop(img, math.max(0, patchPos.x1-smallerSide), patchPos.y2, patchPos.x1, math.min(imgSize.y, patchPos.y2 + smallerSide))
+              else
+                -- Image is mostly in right lower quater
+                noneImage = image.crop(img, math.max(0, patchPos.x1-smallerSide), math.max(0, patchPos.y1-smallerSide), patchPos.x1, patchPos.y1)
+              end
+            end
+            cntDt = cntDt + 1
+            trainData.data[cntDt] = resize[opt.crop](noneImage)
+            trainData.labels[cntDt] = 2 -- none class
+            trainData.occluded[cntDt] = 3 -- unknown occlution
+            --print('success')
+          end
         end
       end
     end
@@ -86,8 +147,8 @@ trainData.data = trainData.data[{{1,cntDt},{},{}}]
 tmoccluded = trainData.occluded
 tmlabels = trainData.labels
 
-trainData.labels = torch.LongStorage(cntDt):fill(0)
-trainData.occluded = torch.LongStorage(cntDt):fill(0)
+trainData.labels = torch.ByteTensor(cntDt):fill(0)
+trainData.occluded = torch.ByteTensor(cntDt):fill(0)
 
 print('Write images in t7 format')
 for i = 1, cntDt do
@@ -95,4 +156,5 @@ for i = 1, cntDt do
   trainData.labels[i] = tmlabels[i]
   trainData.occluded[i] = tmoccluded[i]     
 end
---torch.save('extracted_data_yuv.t7',trainData)
+
+torch.save(opt.save,trainData)
