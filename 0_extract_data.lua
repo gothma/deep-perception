@@ -85,7 +85,7 @@ for i =0, opt.size do
         if (lbltbl[j].x2 < img:size(3)) and (lbltbl[j].x1 < img:size(3)) and 
           (lbltbl[j].y2 < img:size(2)) and ( lbltbl[j].y1 < img:size(2)) then
           -- TODO: Does this take 0-based index into account?
-          local imgSub = image.crop(img,lbltbl[j].x1,lbltbl[j].y1,lbltbl[j].x2,lbltbl[j].y2)
+          local imgSub = image.crop(img,lbltbl[j].x1 + 1, lbltbl[j].y1 + 1, lbltbl[j].x2, lbltbl[j].y2)
           -- Add new resize function into the resize table and call them via the parameters
           local emptyImgSub = resize[opt.crop](imgSub)
           emptyImgSub = image.rgb2yuv(emptyImgSub)
