@@ -110,7 +110,8 @@ require 'optim'   -- an optimization package, for online and batch methods
                                -- evaluate function for complete mini batch
 			       for i = 1,#inputs do
 				  -- estimate f
-                                   
+                                  print(inputs:size())
+                                  print(inputs[1]:size()) 
 				  local output = model:forward(inputs[i])
                                     
 				  local err = criterion:forward(output, targets[i])
