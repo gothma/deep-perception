@@ -75,7 +75,7 @@ print('Read images')
 local binaryClass = opt.class == 'binary'
 
 for i =0, opt.size do
-  --xlua.progress(i, opt.size)
+  xlua.progress(i, opt.size)
   local img = read_image(opt.images , i)
   local lbltbl = read_labels(opt.labels,i)
   for j = 1,table.getn(lbltbl) do
@@ -143,18 +143,21 @@ for i =0, opt.size do
   end
 end
 
-trainData.data = trainData.data[{{1,cntDt},{},{}}]
-tmoccluded = trainData.occluded
-tmlabels = trainData.labels
+s = trainData.data:size()
+s[1] = cntDt
 
-trainData.labels = torch.ByteTensor(cntDt):fill(0)
-trainData.occluded = torch.ByteTensor(cntDt):fill(0)
+saveData = {
+  data = torch.DoubleTensor(s),
+  labels = torch.ByteTensor(cntDt),
+  occluded = torch.ByteTensor(cntDt)
+}
 
-print('Write images in t7 format')
+print('Copy vector to save space')
 for i = 1, cntDt do
   xlua.progress(i, cntDt)
-  trainData.labels[i] = tmlabels[i]
-  trainData.occluded[i] = tmoccluded[i]     
+  saveData.data[i] = trainData.data[i]
+  saveData.labels[i] = trainData.labels[i]
+  saveData.occluded[i] = trainData.occluded[i]   
 end
 
-torch.save(opt.save,trainData)
+torch.save(opt.save,saveData)
