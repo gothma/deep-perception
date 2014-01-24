@@ -39,8 +39,8 @@ end
 
 trainData = {
   data = torch.DoubleTensor(totalPatches,3,patch_w,patch_h),
-  labels = torch.LongStorage(totalPatches):fill(0), 
-  occluded = torch.LongStorage(totalPatches):fill(0)
+  labels = torch.ByteTensor(totalPatches):fill(0), 
+  occluded = torch.ByteTensor(totalPatches):fill(0)
 }
 local resize = {
   bars=function (imgSub) 
@@ -88,7 +88,7 @@ for i =0, opt.size do
           local imgSub = image.crop(img,lbltbl[j].x1,lbltbl[j].y1,lbltbl[j].x2,lbltbl[j].y2)
           -- Add new resize function into the resize table and call them via the parameters
           local emptyImgSub = resize[opt.crop](imgSub)
-          --emptyImgSub = image.rgb2yuv(emptyImgSub)
+          emptyImgSub = image.rgb2yuv(emptyImgSub)
 
           if binaryClass then imgSlbl = 1
           else imgSlbl = _typeTable[lbltbl[j].type] end
@@ -132,7 +132,7 @@ for i =0, opt.size do
               end
             end
             cntDt = cntDt + 1
-            trainData.data[cntDt] = resize[opt.crop](noneImage)
+            trainData.data[cntDt] = image.rgb2yuv(resize[opt.crop](noneImage))
             trainData.labels[cntDt] = 2 -- none class
             trainData.occluded[cntDt] = 3 -- unknown occlution
             --print('success')
