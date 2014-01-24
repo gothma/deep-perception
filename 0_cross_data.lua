@@ -92,6 +92,11 @@ else
 
   -- calculate sizes
   local numPatches = loaded.data:size(1)
+
+  if opt and opt.size == 'small' then
+    numPatches = 1000
+  end
+
   local freeFolds = numPatches % opt.folds
   local numTrain = 
     math.floor(((opt.folds - 1) / opt.folds) * numPatches) + freeFolds
