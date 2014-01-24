@@ -41,6 +41,8 @@
 - [x] Load the data into our current model
 - [] Listen to YT lectures and read into papers to get a more profund idea of the layers of a convolutional network
 - [] Define first model for dataset
+- [] Sliding window with cascade classifiers
+- [] Sliding window should work with different patch sizes and strides
 
 ## Ideas
 
