@@ -51,7 +51,7 @@ end
 torch.setnumthreads(opt.threads)
 torch.manualSeed(opt.seed)
 
-if opt.mode == 'crossval' and opt.fold >= opt.folds then
+if opt.mode == 'crossval' and opt.fold > opt.folds then
   print 'The fold selected for validation needs \
   to be in the number of total folds'
   os.exit()
