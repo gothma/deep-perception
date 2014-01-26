@@ -12,6 +12,11 @@ cmd:option('-seed', 1, 'fixed input seed for repeatable experiments')
 cmd:option('-threads', 2, 'number of threads')
 -- data:
 cmd:option('-size', 'full', 'how many samples do we load: small | full | extra')
+-- test mode data setting 
+cmd:option('-patchFactor', 1.5 , ' the factor for enlarging the patch(receptive field) size (1.5 as default)')
+cmd:option('-patchSize', 32 , 'the patch (receptive field) size for extract from test images (32 as default)')
+cmd:optin('-stride', 5 , 'the number stride for extracting next patch from test image (5 as default ) ')
+
 -- model:
 cmd:option('-model', 'convnet_car', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
 -- loss:
@@ -31,8 +36,9 @@ cmd:option('-testfile', 'data/kitti_valid.t7',  'Where the testfile lies')
 cmd:option('-extractfile', 'data/extracted_data_yuv.t7', 'Where the extracted data lies')
 cmd:option('-epoches', 200, 'the number of the epoches we need to do')
 cmd:option('-type', 'double', 'type: double | float | cuda')
-cmd:option('-network', 'learned_model', 'learned model file name "*.net"')
-cmd:option('-mode', 'train', ' the operation mode type : train | test | crossval')
+cmd:option('-multinet', 'multinet_model', ' multiclass network learned model file name "*.net"')
+cmd:option('-binarynet', 'binarynet_model', ' binaty network learned model file name "*.net"')
+cmd:option('-mode', 'train', ' the operation mode type : train | testSimple | testCascade | crossval')
 cmd:option('-fold', 0, 'fold which is used for testing')
 cmd:option('-folds', 0, 'if set it will do k fold cross validation')
 cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')

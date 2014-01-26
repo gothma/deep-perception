@@ -84,8 +84,8 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 elseif opt.mode == 'test' then
 
   local loaded = torch.load(test_file)
-  local w_patch = 50
-  local h_patch = 50
+  local w_patch = opt.patchSize
+  local h_patch = opt.patchSize
   local cntTotal = 0 
   l_tbl = table.getn(loaded)
   testData = {data = torch.DoubleTensor(l_tbl,1,1,20,20),
