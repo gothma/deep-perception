@@ -2,35 +2,76 @@ require 'image'
 require 'torch'
 require 'lib/kitti_tools'
 require 'xlua'
+require 'nn'
+
+function _computeTensorSize(indxS, indxE, imgPath, initPatch, patchFact, stridFact)
+  ps = 0
+  cnt = 0
+  local img = read_image('data/images/testing/image_2', indxS)
+  local imgMinS = img:size(2)
+  if (imgMinS > img:size(3)) then 
+    imgMinS = img:size(3)
+  end 
+  while (ps * patchFact < imgMinS) do 
+    ps = ps * patchFactor
+    if ps == 0 then
+      ps = initPatch
+    end
+    st = ps * stridFact
+    for i = 1, img:size(2), st do 
+      for j = 1, img:size(3), st do 
+        cnt = cnt + 1
+      end 
+    end
+  end 
+  cnt = cnt * (indxE - indxS + 1)
+  return cnt
+end
 
 cmd = torch.CmdLine()
 -- test mode data setting 
+cmd:option('-binaryModel', 'path to binary classifier model file')
+cmd:option('-convnetModel', ' path to convolutional classifier model file')
 cmd:option('-indxS', 1, 'the start index for loading image')
 cmd:option('-indxE', 5, 'the end index for loading image')
-cmd:option('-patchFactor', 1.5, 'the factor for increasing the patch size')
-cmd:option('-stride', 5, 'the stride for extracting patches')
-cmd:option('-mean', 0, ' mean of train images')
-cmd:option('-std', 1, 'std of train images')
+cmd:option('-patchFactor', 1.3, 'the factor for increasing the patch size')
+cmd:option('-strideFactor', 0.15, 'stride factor for increasing stride size for sliding patches')
+cmd:option('-mean', 0, ' mean of train images should be tensor')
+cmd:option('-std', 1, 'std of train images should be tensor')
+cmd:option('-initPatch', 32, ' initialize size for patches')
+cmd:option('-imgPath', 'data/images/testing/image_2',' path for loading test images  [ default = data/images/resting/image_2]')
 opt = opt or cmd:parse(arg or {})
 
+---- load models 
+binaryModel = opt.binaryModel
+convnetModel = opt.convnetModel
+------
 -- Tables take strings as index, on false index an error is thown
 local patch_w = 0 
 local patch_h = 0 
 local channels = {'y','u','v'}
-for i = 1, 4 do
-  patch_w = patch_w * opt.patchFactor
-  patch_h = patch_h * opt.patchFactor
-  if ((patch_w == 0) and (patch_h == 0)) then  
-    patch_w = 64
-    patch_h = 64
+local cnt = _computeTensorSize(opt.indxS, opt.indxE, opt.imgPath, opt.initPatch, opt.patchFactor, opt.tridFactor)
+local testData = {locations = torch.Tensor(cnt, 7)}
+--data = torch.DoubleTensor(opt.indxE - opt.indxS + 1, 1, 3, patch_w, patch_h),
+local locIndx = 1
+for imgIndx = opt.indxS, opt.indxE do 
+ 
+  print('Read images')
+  xlua.progress(imgIndx, opt.indxE - opt.indxS +1)
+  local img = read_image('data/images/testing/image_2', imgIndx)
+  imgMinSize = img:size(2)
+  if imgMinSize > img:size(3) then 
+    imgMinSize = img:size(3)
   end
-  print(tostring(patch_h) .. tostring(patch_w))
-  local testData = {data = torch.DoubleTensor(opt.indxE - opt.indxS + 1, 1, 3, patch_w, patch_h),
-         	    locations = torch.DoubleTensor(opt.indxE - opt.indxS +1, 1, 6)}
-  for imgIndx = opt.indxS, opt.indxE do 
-    print('Read images')
-    xlua.progress(imgIndx, opt.indxE - opt.indxS +1)
-    local img = read_image('data/images/testing/image_2', imgIndx)
+  
+  while (patch_w * opt.patchFactor < imgminSize) do
+    patch_w = patch_w * opt.patchFactor
+    patch_h = patch_h * opt.patchFactor
+    if ((patch_w == 0) and (patch_h == 0)) then  
+      patch_w = opt.patchSize
+      patch_h = opt.patchSize
+    end
+    print(tostring(patch_h) .. tostring(patch_w))
     local cnt = 1   
     local hw = (img:size(2) / opt.stride) * (img:size(3) / opt.stride)
     local tmData = torch.DoubleTensor(hw, 3, 32, 32):fill(-10) 

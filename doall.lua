@@ -12,10 +12,6 @@ cmd:option('-seed', 1, 'fixed input seed for repeatable experiments')
 cmd:option('-threads', 2, 'number of threads')
 -- data:
 cmd:option('-size', 'full', 'how many samples do we load: small | full | extra')
--- test mode data setting 
-cmd:option('-patchFactor', 1.5 , ' the factor for enlarging the patch(receptive field) size (1.5 as default)')
-cmd:option('-patchSize', 32 , 'the patch (receptive field) size for extract from test images (32 as default)')
-cmd:optin('-stride', 5 , 'the number stride for extracting next patch from test image (5 as default ) ')
 
 -- model:
 cmd:option('-model', 'convnet_car', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
