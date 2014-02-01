@@ -14,7 +14,7 @@ cmd:option('-threads', 2, 'number of threads')
 cmd:option('-size', 'full', 'how many samples do we load: small | full | extra')
 
 -- model:
-cmd:option('-model', 'convnet_car', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
+cmd:option('-model', 'convnet_car', 'type of model : convnet_car')
 -- loss:
 cmd:option('-loss', 'nll', 'type of loss function to minimize: nll | mse | margin')
 -- training:
@@ -41,8 +41,8 @@ cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')
 cmd:text('-k',10,'set numbero of folding in cross validation deafult is 10')
 ---------
 -- test mode data setting 
-cmd:option('-binaryModel', nil, 'path to binary classifier model file')
-cmd:option('-convnetModel', nil, ' path to convolutional classifier model file')
+cmd:option('-binaryModel', '', 'path to binary classifier model file')
+cmd:option('-convnetModel', '', ' path to convolutional classifier model file')
 cmd:option('-binaryThresh', -0.4, 'threshold for binary classifier')
 cmd:option('-convnetThresh', -0.2, 'threshold for convolutional classifier')
 cmd:option('-indxS', 1, 'the start index for loading image')
@@ -111,9 +111,6 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 
 elseif opt.mode == 'test'  then
   
-  dofile '1_data.lua'
-  dofile '2_model.lua'
-  dofile '5_test.lua'
-  test()
+  dofile '6_perform_test.lua'
 
 end

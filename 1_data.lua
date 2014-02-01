@@ -81,7 +81,8 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 
   testMean = testData.data[{ {},1 }]:mean()
   testStd = testData.data[{ {},1 }]:std()
-       
+end
+--[=[       
 elseif opt.mode == 'test' then
   
   local loaded = torch.load(test_file)
@@ -153,4 +154,4 @@ elseif opt.mode == 'test' then
   print("test mode data size") 
   print(testData:size())
 end
-
+]=]--
