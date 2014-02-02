@@ -45,17 +45,16 @@ cmd:option('-binaryModel', '', 'path to binary classifier model file')
 cmd:option('-convnetModel', '', ' path to convolutional classifier model file')
 cmd:option('-binaryThresh', -0.4, 'threshold for binary classifier')
 cmd:option('-convnetThresh', -0.2, 'threshold for convolutional classifier')
-cmd:option('-indxS', 1, 'the start index for loading image')
+cmd:option('-indxS', 0, 'the start index for loading image')
 cmd:option('-indxE', 5, 'the end index for loading image')
 cmd:option('-patchFactor', 1.3, 'the factor for increasing the patch size')
 cmd:option('-strideFactor', 0.15, 'stride factor for increasing stride size for sliding patches')
-cmd:option('-mean', 0, ' mean of train images should be tensor')
-cmd:option('-std', 1, 'std of train images should be tensor')
+cmd:option('-mean', 'train_mean.t7' , ' mean of train images should be tensor')
+cmd:option('-std', 'train_std.t7', 'std of train images should be tensor')
 cmd:option('-initPatchSize', 32, ' initialize size for patches')
 cmd:option('-testScaleSize', 32, 'the scale number which needed for testing the image')
 cmd:option('-imgFilePath', 'data/images/testing/image_2',' path for loading test images  [ default = data/images/resting/image_2]')
------
-
+                           
 opt = cmd:parse(arg or {})
 
 -- nb of threads and fixed seed (for repeatable experiments)
@@ -90,7 +89,6 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
   dofile '3_loss.lua'
   dofile '4_train.lua'
   dofile '5_test.lua'
-
 ----------------------------------------------------------------------
   print '==> training!'
 
