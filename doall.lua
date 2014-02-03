@@ -12,8 +12,9 @@ cmd:option('-seed', 1, 'fixed input seed for repeatable experiments')
 cmd:option('-threads', 2, 'number of threads')
 -- data:
 cmd:option('-size', 'full', 'how many samples do we load: small | full | extra')
+
 -- model:
-cmd:option('-model', 'convnet_car', 'type of model : convnet_happy | convnet_sad | convnet_winking | convnet_frustrated')
+cmd:option('-model', 'convnet_car', 'type of model : convnet_car')
 -- loss:
 cmd:option('-loss', 'nll', 'type of loss function to minimize: nll | mse | margin')
 -- training:
@@ -31,12 +32,29 @@ cmd:option('-testfile', 'data/kitti_valid.t7',  'Where the testfile lies')
 cmd:option('-extractfile', 'data/extracted_data_yuv.t7', 'Where the extracted data lies')
 cmd:option('-epoches', 200, 'the number of the epoches we need to do')
 cmd:option('-type', 'double', 'type: double | float | cuda')
-cmd:option('-network', 'learned_model', 'learned model file name "*.net"')
-cmd:option('-mode', 'train', ' the operation mode type : train | test | crossval')
+cmd:option('-multinet', 'multinet_model', ' multiclass network learned model file name "*.net"')
+cmd:option('-binarynet', 'binarynet_model', ' binaty network learned model file name "*.net"')
+cmd:option('-mode', 'train', ' the operation mode type : train | testSimple | testCascade | crossval')
 cmd:option('-fold', 0, 'fold which is used for testing')
 cmd:option('-folds', 0, 'if set it will do k fold cross validation')
 cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')
 cmd:text('-k',10,'set numbero of folding in cross validation deafult is 10')
+---------
+-- test mode data setting 
+cmd:option('-binaryModel', '', 'path to binary classifier model file')
+cmd:option('-convnetModel', '', ' path to convolutional classifier model file')
+cmd:option('-binaryThresh', -0.4, 'threshold for binary classifier')
+cmd:option('-convnetThresh', -0.2, 'threshold for convolutional classifier')
+cmd:option('-indxS', 0, 'the start index for loading image')
+cmd:option('-indxE', 5, 'the end index for loading image')
+cmd:option('-patchFactor', 1.3, 'the factor for increasing the patch size')
+cmd:option('-strideFactor', 0.15, 'stride factor for increasing stride size for sliding patches')
+cmd:option('-mean', 'train_mean.t7' , ' mean of train images should be tensor')
+cmd:option('-std', 'train_std.t7', 'std of train images should be tensor')
+cmd:option('-initPatchSize', 32, ' initialize size for patches')
+cmd:option('-testScaleSize', 32, 'the scale number which needed for testing the image')
+cmd:option('-imgFilePath', 'data/images/testing/image_2',' path for loading test images  [ default = data/images/resting/image_2]')
+                           
 opt = cmd:parse(arg or {})
 
 -- nb of threads and fixed seed (for repeatable experiments)
@@ -71,7 +89,6 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
   dofile '3_loss.lua'
   dofile '4_train.lua'
   dofile '5_test.lua'
-
 ----------------------------------------------------------------------
   print '==> training!'
 
@@ -92,9 +109,6 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 
 elseif opt.mode == 'test'  then
   
-  dofile '1_data.lua'
-  dofile '2_model.lua'
-  dofile '5_test.lua'
-  test()
+  dofile '6_perform_test.lua'
 
 end

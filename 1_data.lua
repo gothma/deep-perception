@@ -53,7 +53,8 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
     trainData.data[{ {},i,{},{} }]:add(-mean[i])
     trainData.data[{ {},i,{},{} }]:div(std[i])
   end
-
+  torch.save('mean_train.t7', mean);
+  torch.save('stdtrain.t7', std);
   for i,channel in ipairs(channels) do 
     testData.data[{ {},i,{},{} }]:add(-mean[i])
     testData.data[{ {},i,{},{} }]:div(std[i])
@@ -80,12 +81,13 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 
   testMean = testData.data[{ {},1 }]:mean()
   testStd = testData.data[{ {},1 }]:std()
-       
+end
+--[=[       
 elseif opt.mode == 'test' then
-
+  
   local loaded = torch.load(test_file)
-  local w_patch = 50
-  local h_patch = 50
+  local w_patch = opt.patchSize
+  local h_patch = opt.patchSize
   local cntTotal = 0 
   l_tbl = table.getn(loaded)
   testData = {data = torch.DoubleTensor(l_tbl,1,1,20,20),
@@ -152,4 +154,4 @@ elseif opt.mode == 'test' then
   print("test mode data size") 
   print(testData:size())
 end
-
+]=]--

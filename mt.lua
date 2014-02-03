@@ -2,7 +2,7 @@
 require 'torch'   -- torch
 require 'image'   -- to visualize the dataset
 require 'nn'      -- provides all sorts of trainable modules/layers
-noutputs = 9
+noutputs = 2
 nfeats = 3
 width = 50
 height = 50

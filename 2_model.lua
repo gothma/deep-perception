@@ -153,12 +153,12 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
                 model:add(nn.Linear(64,4))
 
 	end
-elseif  opt.mode == 'test' then 
-      model = torch.load(opt.network)
+--elseif  opt.mode == 'test' then 
+  --    model = torch.load(opt.network)
 end
 
 ----------------------------------------------------------------------
---print '==> here is the model:'
---print(model)
+print '==> here is the model:'
+print(model)
 
  
