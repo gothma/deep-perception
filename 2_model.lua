@@ -51,7 +51,7 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 		model:add(nn.Tanh())
 		model:add(nn.Linear(nstates[3], noutputs)) 
 
-	if opt.model == 'convnet_binary' then
+	elseif opt.model == 'convnet_binary' then
 
 		noutputs = 2
 

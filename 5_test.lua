@@ -58,7 +58,7 @@ function test()
   confusion:zero()
 
   -- next iteration:
-
+  end
 end
 --[=[
   elseif opt.mode == 'test' then

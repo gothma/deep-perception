@@ -3,6 +3,8 @@ require 'torch'
 require 'nn'
 require 'xlua'
 
+
+
 function _disturb(instance, chance)
   disturbed_instance = torch.Tensor():resizeAs(instance):copy(instance)
   for y=2,instance:size(1)-1 do
@@ -29,24 +31,26 @@ if not opt or opt.mode ~= 'crossval' then
   }
   local trdbSize = trainData.data:size()
 
+  local classes = 2
+
   local validation_set_size = 100
   validationData = {
-    data = torch.DoubleTensor(validation_set_size * 9 * 2,trdbSize[2],trdbSize[3],trdbSize[4]),--:transpose(3,4),
-    labels = torch.ByteTensor(validation_set_size * 9 * 2)
+    data = torch.DoubleTensor(validation_set_size * classes * 2,trdbSize[2],trdbSize[3],trdbSize[4]),--:transpose(3,4),
+    labels = torch.ByteTensor(validation_set_size * classes * 2)
   }
 
   -----------------------------------------------
   print("extend dataset") 
   local tmdatanum = trdbSize[1]
   local indx =0
-  local dataTen = torch.DoubleTensor((trdbSize[1] - (validation_set_size * 9)) * 2 ,trdbSize[2],
+  local dataTen = torch.DoubleTensor((trdbSize[1] - (validation_set_size * classes)) * 2 ,trdbSize[2],
                            trdbSize[3],trdbSize[3]) 
-  local labelTen = torch.Tensor((trdbSize[1] - (validation_set_size * 9)) * 2)  
+  local labelTen = torch.Tensor((trdbSize[1] - (validation_set_size * classes)) * 2)  
 
   local img = trainData.data[1]
   local imgLbl = trainData.labels[1]
   local imgM = image.hflip(img)--mirror image
-  local hold_back_counter = torch.LongStorage(9):fill(0)
+  local hold_back_counter = torch.LongStorage(classes):fill(0)
   local val_cnt = 0
   local i = 0
 
