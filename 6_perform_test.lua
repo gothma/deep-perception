@@ -216,4 +216,4 @@ for imgIndx = opt.indxS, opt.indxE do
   end --- end while
 end -- end main for loop
 print('kitti_test' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) ..'_' .. tostring(patchSize) .. '.t7')
-torch.save('kitti_test' .. '_' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) ..'_' .. tostring(patchSize) .. '.t7', testData)
+torch.save('kitti_test' .. '_' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) .. 't7', testData)
