@@ -35,30 +35,30 @@ function test()
       local pred = model:forward(input) 
       confusion:add(pred, target)
     end
-  -- timing
-  time = sys.clock() - time
-  time = time / testData:size()
-  print("\n==> time to test 1 sample = " .. (time*1000) .. 'ms')
+    -- timing
+    time = sys.clock() - time
+    time = time / testData:size()
+    print("\n==> time to test 1 sample = " .. (time*1000) .. 'ms')
 
-  -- print confusion matri
-  print(confusion)
+    -- print confusion matri
+    print(confusion)
 
-   --   update log/plot
-  testLogger:add{['% mean class accuracy (test set)'] = confusion.totalValid * 100}
-  if opt.plot then
-    testLogger:style{['% mean class accuracy (test set)'] = '-'}
-    testLogger:plot()
+     --   update log/plot
+    testLogger:add{['% mean class accuracy (test set)'] = confusion.totalValid * 100}
+    if opt.plot then
+      testLogger:style{['% mean class accuracy (test set)'] = '-'}
+      testLogger:plot()
+    end
+
+    -- averaged param use?
+    if average then
+      --restore parameters
+      parameters:copy(cachedparams)
+    end
+    confusion:zero()
+
+    -- next iteration:
   end
-
-  -- averaged param use?
-  if average then
-    --restore parameters
-    parameters:copy(cachedparams)
-  end
-  confusion:zero()
-
-  -- next iteration:
-
 end
 --[=[
   elseif opt.mode == 'test' then
