@@ -41,8 +41,8 @@ cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')
 cmd:text('-k',10,'set numbero of folding in cross validation deafult is 10')
 ---------
 -- test mode data setting 
-cmd:option('-binaryModel', '', 'path to binary classifier model file')
-cmd:option('-convnetModel', '', ' path to convolutional classifier model file')
+cmd:option('-binaryModel', 'models/model_convnet_binary.net', 'path to binary classifier model file')
+cmd:option('-convnetModel', 'models/model_convnet_car.net', ' path to convolutional classifier model file')
 cmd:option('-binaryThresh', -0.4, 'threshold for binary classifier')
 cmd:option('-convnetThresh', -0.2, 'threshold for convolutional classifier')
 cmd:option('-indxS', 0, 'the start index for loading image')
