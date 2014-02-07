@@ -83,9 +83,10 @@ end
 ----------------------------------------------------------------------------
 -- this is the function for binary classification testing the patches and also threshold them
 function _testBinaryClassifier(testData, threshValue, binaryModel)
+  print("testing ====> binary classifier")
   for l = 1,testData.data:size(1) do
      -- disp progress
-     print("testing ====> binary classifier")
+     
      xlua.progress(l,testData.data:size(1))
      -- get new sample
      local input = testData.data[l]
@@ -104,10 +105,11 @@ end
 ----------------------------------------------------------------------------
 -- this is the function for convolutional classification testing the patches and also threshold them
 function _testConvnetClassifier(testData, threshValue, convnetModel)
+  print("testing ====> convolutional classifier")
   for l = 1,testData.data:size(1) do
     if (testData.locations[l][7] == 0) then
       -- disp progress
-      print("testing ====> convolutional classifier")
+      
       xlua.progress(l,testData.data:size(1))
       -- get new sample
       local input = testData.data[l]
@@ -197,6 +199,7 @@ local testData = {locations = torch.Tensor(allLocCnt, 7)}
 local locIndx = 1 -- the index to latest extracted location orverall 
 local mean = torch.load(opt.mean)
 local std = torch.load(opt.std)
+print('Read images')
 for imgIndx = opt.indxS, opt.indxE do 
   
   -- this is function for computing the location number for all patch size of all images
@@ -205,7 +208,7 @@ for imgIndx = opt.indxS, opt.indxE do
   local testData = {locations = torch.Tensor(allLocCnt, 8)}
 
   local locIndx = 0 -- the index to latest extracted location orverall 
-  print('Read images')
+  
   xlua.progress(imgIndx, opt.indxE - opt.indxS +1)
   local img = read_image(opt.imgFilePath, imgIndx)
   local imgMinSize = img:size(2)
