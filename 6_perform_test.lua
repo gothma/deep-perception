@@ -223,7 +223,7 @@ for imgIndx = opt.indxS, opt.indxE do
     if (patchSize == 0) then  
       patchSize = opt.initPatchSize
     end
-    print(tostring(patchSize) .. " * " .. tostring(patchSize))
+    -- print(tostring(patchSize) .. " * " .. tostring(patchSize))
     local strideSize = patchSize * opt.strideFactor
  
     local tmTestData =  _extractPatches(img, imgIndx, opt.testScaleSize, patchSize, strideSize) ---extract all patches 
@@ -245,5 +245,5 @@ for imgIndx = opt.indxS, opt.indxE do
   end --- end while
   _createObjectsTable(testData.locations, imgIndx)
 end -- end main for loop
-print('kitti_test' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) ..'_' .. tostring(patchSize) .. '.t7')
-torch.save('kitti_test' .. '_' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) .. 't7', testData)
+--print('kitti_test' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) ..'_' .. tostring(patchSize) .. '.t7')
+--torch.save('kitti_test' .. '_' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) .. 't7', testData)

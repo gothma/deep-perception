@@ -8,7 +8,7 @@ require 'optim'
 print '==> define parameters'
 
 -- 4-class problem
-noutputs = 9
+noutputs = 8
 
 -- input dimensions
 nfeats = 3
