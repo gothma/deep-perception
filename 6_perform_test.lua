@@ -139,18 +139,18 @@ function _createObjectsTable(locations, imgIndx)
   }
  local objects = {}
   for i = 1, locations:size(1) do
-    local object = {imgNum = -1, x1 = -1, x2 = -1, y1 = -1, y2 = -1, score = -1, type = -1, threshold = 0}
-    object.imgNum = locations[i][8] 
-    object.y1 = locations[i][1]
-    object.y2 = locations[i][2]
-    object.x1 = locations[i][3]
-    object.x2 = locations[i][4]
-    object.type = _typeTable[locations[i][5]]
-    object.score = locations[i][6]
-    object.threshold = locations[i][7]
-    table.insert(objects, object)
-    print(object)
-    print(locations[i])
+    if (testData.locations[l][7] == 0) then
+      local object = {imgNum = -1, x1 = -1, x2 = -1, y1 = -1, y2 = -1, score = -1, type = -1, threshold = 0}
+      object.imgNum = locations[i][8] 
+      object.y1 = locations[i][1]
+      object.y2 = locations[i][2]
+      object.x1 = locations[i][3]
+      object.x2 = locations[i][4]
+      object.type = _typeTable[locations[i][5]]
+      object.score = locations[i][6]
+      object.threshold = locations[i][7]
+      table.insert(objects, object)
+    end
   end
   if table.getn(objects) > 0 then  
     objectsNew = nonmaxima_suppression(objects)
