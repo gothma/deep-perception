@@ -115,7 +115,7 @@ function _testConvnetClassifier(testData, threshValue, convnetModel)
       local input = testData.data[l]
       input =input:double()  
       -- test sample
-      local pred = binaryModel:forward(input)
+      local pred = convnetModel:forward(input)
       local tmMax, tmIndx = torch.max(pred, 1)
       testData.locations[l][5] = tmIndx[1]
       testData.locations[l][6] = tmMax[1] 
