@@ -34,24 +34,24 @@ end
 
 ----------------------------------------------------------------------------
 ---- extract all patches from an image with given patch size and stride size
-function _extractPatches(img, testScaleSize, patchSize, strideSize) 
+function _extractPatches(img, imgIndx, testScaleSize, patchSize, strideSize) 
   local cnt = 1   
   local hw = (img:size(2) / strideSize) * (img:size(3) / strideSize)
   local tmData = torch.DoubleTensor(hw, 3, testScaleSize, testScaleSize):fill(-10) 
-  local tmLoc = torch.DoubleTensor(hw, 7):fill(0)
+  local tmLoc = torch.DoubleTensor(hw, 8):fill(0)
     
   for i = 1, img:size(2), strideSize do 
     for j = 1, img:size(3), strideSize do 
       if (i + patchSize - 1 < img:size(2)) and (j + patchSize - 1 < img:size(3)) then
         tmData[cnt] = image.scale(img[{{},{i , i + patchSize- 1},{j , j + patchSize - 1}}], testScaleSize, testScaleSize)
-        tmLoc[cnt] = torch.DoubleTensor({i, i + patchSize - 1, j, j + patchSize - 1, 0,0,0})
+        tmLoc[cnt] = torch.DoubleTensor({i, i + patchSize - 1, j, j + patchSize - 1, 0,0,0, imgIndx})
         -- print(tmLoc[cnt]) 
         cnt = cnt + 1  
       end 
     end
   end  
   local tmResult = {data = torch.DoubleTensor(cnt,3, testScaleSize, testScaleSize),
-             locations = torch.Tensor(cnt, 7)}
+             locations = torch.Tensor(cnt, 8)}
   for i = 1, cnt do 
     tmResult.locations[i] = tmLoc[i]
     -- print(tmResult.locations[i])
@@ -156,7 +156,7 @@ _typeTable = {
 }
 
 function convert_to_kitti(locations)
-  labels = {}
+  labels = {{}}
   for i=1,locations:size(1) do
     if locations[i][7] == 0 then -- Only insert non thresholded images
       kitti_label = {
@@ -164,8 +164,9 @@ function convert_to_kitti(locations)
         x2=locations[i][2],
         y1=locations[i][3],
         y2=locations[i][4],
-        type=_typeTable[locations[i][5]],
+        type=_typeTable[3],
         score=locations[i][6]
+        img=locations[i][8]
       }
       table.insert(labels,kitti_label)
     end
@@ -212,7 +213,7 @@ local allLocCnt = _computeTensorSize(opt.indxS, opt.indxE, opt.initPatchSize
 --[2][5] predicted label
 --[2][6] prediction value 
 --[2][7] ? 1 = thresholded(omitted) , 0 = not thresholded
-testData = {locations = torch.Tensor(allLocCnt, 7)}
+testData = {locations = torch.Tensor(allLocCnt, 8)}
 kittiData = {}
                   --data = torch.DoubleTensor(opt.indxE - opt.indxS + 1, 1, 3, patch_w, patch_h),
 local locIndx = 1 -- the index to latest extracted location orverall 
@@ -238,7 +239,7 @@ for imgIndx = opt.indxS, opt.indxE do
     -- print(tostring(patchSize) .. " * " .. tostring(patchSize))
     local strideSize = patchSize * opt.strideFactor
  
-    local tmTestData =  _extractPatches(img, opt.testScaleSize, patchSize, strideSize) ---extract all patches 
+    local tmTestData =  _extractPatches(img,imgIndx, opt.testScaleSize, patchSize, strideSize) ---extract all patches 
  
     tmTestData = _normalizeTestData(tmTestData, mean, std, channels)
   
@@ -253,11 +254,12 @@ for imgIndx = opt.indxS, opt.indxE do
     for i = 1, tmTestData.locations:size(1) do 
       testData.locations[i + locIndx] = tmTestData.locations[i]---copy  testing results
     end
-    table.insert(kittiData, imgIndx, non_maxima_suppression(convert_to_kitti(tmTestData.locations)))
+    
   end --- end while
 end -- end main for loop
+table.insert(kittiData, nonmaxima_suppression(convert_to_kitti(testData.locations)))
 print('kitti_test' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) ..'_' .. tostring(patchSize) .. '.t7')
 torch.save('kitti_test' .. '_' .. tostring(opt.indxS) .. '_' .. tostring(opt.indxE) .. 't7', testData)
 for name, labels in pairs(kittiData) do
-  torch.save(tostring(name) .. '.txt', labels)
+  write_labels('/tmp', name, labels)
 end
