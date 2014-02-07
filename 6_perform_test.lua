@@ -139,7 +139,7 @@ function _createObjectsTable(locations, imgIndx)
   }
  local objects = {}
   for i = 1, locations:size(1) do
-    if (testData.locations[l][7] == 0) then
+    if (locations[i][7] == 0) then
       local object = {imgNum = -1, x1 = -1, x2 = -1, y1 = -1, y2 = -1, score = -1, type = -1, threshold = 0}
       object.imgNum = locations[i][8] 
       object.y1 = locations[i][1]
