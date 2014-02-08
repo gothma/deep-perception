@@ -70,14 +70,14 @@ function _normalizeTestData(testData, mean, std, channels)
     testData.data[{ {},i,{},{} }]:div(std[i])
   end
   print '==> preprocessing data: normalize all three channels locally'
-  --[=[local neighborhood = image.gaussian1D(13)
+  local neighborhood = image.gaussian1D(13)
   local normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
   for c in ipairs(channels) do
     for i = 1,testData.data:size(1) do
       xlua.progress(i, testData.data:size(1))
       testData.data[{ i,{c},{},{} }] = normalization:forward(testData.data[{ i,{c},{},{} }])
     end
-  end]=]
+  end
   return testData
 end
 ----------------------------------------------------------------------------
