@@ -107,7 +107,7 @@ end
 function _testConvnetClassifier(testData, threshValue, convnetModel)
   print("testing ====> convolutional classifier")
   for l = 1,testData.data:size(1) do
-    if (testData.locations[l][7] == 0 and testData.locations[l][5] == 1) then
+    if (testData.locations[l][7] == 0) then
       -- disp progress
       
       xlua.progress(l,testData.data:size(1))
