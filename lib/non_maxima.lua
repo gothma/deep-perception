@@ -54,7 +54,7 @@ nonmaxima_suppression = function (objects)
   for i=1,#objects do
     for j=i+1,#objects do
       local overlap = overlap_area (objects[i], objects[j])
-      if (overlap>0.4 and objects[i].type==objects[j].type) then
+      if (overlap>0.2) then -- and objects[i].type==objects[j].type) then
         if (objects[i].score>objects[j].score) then
           objects[j].is_maximum = false
         else
