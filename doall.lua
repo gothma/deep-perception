@@ -34,24 +34,24 @@ cmd:option('-epoches', 200, 'the number of the epoches we need to do')
 cmd:option('-type', 'double', 'type: double | float | cuda')
 cmd:option('-multinet', 'multinet_model', ' multiclass network learned model file name "*.net"')
 cmd:option('-binarynet', 'binarynet_model', ' binaty network learned model file name "*.net"')
-cmd:option('-mode', 'train', ' the operation mode type : train | testSimple | testCascade | crossval')
+cmd:option('-mode', 'test', ' the operation mode type : train | testSimple | testCascade | crossval')
 cmd:option('-fold', 0, 'fold which is used for testing')
 cmd:option('-folds', 0, 'if set it will do k fold cross validation')
 cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')
 cmd:text('-k',10,'set numbero of folding in cross validation deafult is 10')
 ---------
 -- test mode data setting 
-cmd:option('-binaryModel', 'models/model_convnet_binary.net', 'path to binary classifier model file')
-cmd:option('-convnetModel', 'models/model_convnet_car.net', ' path to convolutional classifier model file')
+cmd:option('-binaryModel', 'models/model_convnet_binary_scale_3.net', 'path to binary classifier model file')
+cmd:option('-convnetModel', 'models/model_convnet_car_18.net', ' path to convolutional classifier model file')
 cmd:option('-binaryThresh', -0.01,  'threshold for binary classifier')
 cmd:option('-convnetThresh', -0.0001 ,'threshold for convolutional classifier')
 cmd:option('-indxS', 0, 'the start index for loading image')
 cmd:option('-indxE', 5, 'the end index for loading image')
-cmd:option('-patchFactor', 1.3, 'the factor for increasing the patch size')
+cmd:option('-patchFactor', 1.2, 'the factor for increasing the patch size')
 cmd:option('-strideFactor', 0.15, 'stride factor for increasing stride size for sliding patches')
 cmd:option('-mean', 'train_mean.t7' , ' mean of train images should be tensor')
 cmd:option('-std', 'train_std.t7', 'std of train images should be tensor')
-cmd:option('-initPatchSize', 32, ' initialize size for patches')
+cmd:option('-initPatchSize', 64, ' initialize size for patches')
 cmd:option('-testScaleSize', 32, 'the scale number which needed for testing the image')
 cmd:option('-imgFilePath', 'data/images/testing/image_2',' path for loading test images  [ default = data/images/resting/image_2]')
 cmd:option('-noSuppression', 'If set the non-maxima suppression is turned off')
@@ -113,5 +113,4 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 elseif opt.mode == 'test'  then
   
   dofile '6_perform_test.lua'
-
 end
