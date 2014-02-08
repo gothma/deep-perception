@@ -21,6 +21,7 @@ nhiddens = ninputs / 2
 
 -- hidden units, filter sizes (for ConvNet only):
 nstates = {64,64,128}
+nstatesBinary = {32,32,64}
 filtsize = 5
 poolsize = 2
 normkernel = image.gaussian1D(7)
@@ -56,22 +57,22 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 		noutputs = 2
 
 	-- stage 1 : filter bank -> squashing -> L2 pooling -> normalization
-		model:add(nn.SpatialConvolutionMM(nfeats, nstates[1], filtsize, filtsize))
+		model:add(nn.SpatialConvolutionMM(nfeats, nstatesBinary[1], filtsize, filtsize))
 		model:add(nn.Tanh())
-		model:add(nn.SpatialLPPooling(nstates[1],2,poolsize,poolsize,poolsize,poolsize))
-		model:add(nn.SpatialSubtractiveNormalization(nstates[1], normkernel))
+		model:add(nn.SpatialLPPooling(nstatesBinary[1], 2, poolsize, poolsize, poolsize, poolsize))
+		model:add(nn.SpatialSubtractiveNormalization(nstatesBinary[1], normkernel))
 
 		-- stage 2 : filter bank -> squashing -> L2 pooling -> normalization
-		model:add(nn.SpatialConvolutionMM(nstates[1], nstates[2], filtsize, filtsize))
+		model:add(nn.SpatialConvolutionMM(nstatesBinary[1], nstatesBinary[2], filtsize, filtsize))
 		model:add(nn.Tanh())
-		model:add(nn.SpatialLPPooling(nstates[2],2,poolsize,poolsize,poolsize,poolsize))
+		model:add(nn.SpatialLPPooling(nstatesBinary[2], 2, poolsize, poolsize, poolsize, poolsize))
 		model:add(nn.SpatialSubtractiveNormalization(nstates[2], normkernel))
 
 		-- stage 3 : standard 2-layer neural network
-		model:add(nn.Reshape(nstates[2]*filtsize*filtsize))
-		model:add(nn.Linear(nstates[2]*filtsize*filtsize, nstates[3]))
+		model:add(nn.Reshape(nstatesBinary[2] * filtsize * filtsize))
+		model:add(nn.Linear(nstatesBinary[2] * filtsize * filtsize, nstates[3]))
 		model:add(nn.Tanh())
-		model:add(nn.Linear(nstates[3], noutputs)) 
+		model:add(nn.Linear(nstatesBinary[3], noutputs)) 
 
 	elseif opt.model == 'convnet_sad' then 
 
