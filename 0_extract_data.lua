@@ -131,11 +131,15 @@ for i =0, opt.size do
                 noneImage = image.crop(img, math.max(0, patchPos.x1-smallerSide), math.max(0, patchPos.y1-smallerSide), patchPos.x1, patchPos.y1)
               end
             end
-            cntDt = cntDt + 1
-            trainData.data[cntDt] = image.rgb2yuv(resize[opt.crop](noneImage))
-            trainData.labels[cntDt] = 2 -- none class
-            trainData.occluded[cntDt] = 3 -- unknown occlution
-            --print('success')
+
+            if (tostring(noneImage:mean()) ~= 'nan') then
+              cntDt = cntDt + 1
+              trainData.data[cntDt] = image.rgb2yuv(resize[opt.crop](noneImage))
+              trainData.labels[cntDt] = 2 -- none class
+              trainData.occluded[cntDt] = 3 -- unknown occlution
+              --print('success')
+            else print('Skipped nan patch')
+            end
           end
         end
       end
