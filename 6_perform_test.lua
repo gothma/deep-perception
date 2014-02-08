@@ -154,8 +154,12 @@ function _createObjectsTable(locations, imgIndx)
       table.insert(objects, object)
     end
   end
-  if table.getn(objects) > 0 then  
-    objectsNew = nonmaxima_suppression(objects)
+  if table.getn(objects) > 0 then
+    if opt.noSuppression then
+      objectsNew = objects
+    else
+      objectsNew = nonmaxima_suppression(objects)
+    end
     write_labels('results/test', imgIndx, objectsNew)
     print('Nonmaxima removed ' .. #objects - #objectsNew .. 'patches')
     print('Found ' .. #objects .. ' matches in image ' .. imgIndx)
