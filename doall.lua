@@ -58,8 +58,6 @@ cmd:option('-imgFilePath', 'data/images/testing/image_2',' path for loading test
 opt = cmd:parse(arg or {})
 
 
-if opt.binaryThresh == 'nil' then opt.binaryThresh = nil end
-if opt.convnetThresh == 'nil' then opt.convnetThresh = nil end
 
 -- nb of threads and fixed seed (for repeatable experiments)
 if opt.type == 'float' then

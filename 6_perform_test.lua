@@ -233,11 +233,11 @@ for imgIndx = opt.indxS, opt.indxE do
  
     tmTestData = _normalizeTestData(tmTestData, mean, std, channels)
   
-    if binaryThresh ~= nil then
+    if binaryThresh ~= 1 then
       tmTestData = _testBinaryClassifier(tmTestData, binaryThresh, binaryModel)
     end 
 
-    if convnetThresh ~= nil then
+    if convnetThresh ~= 1 then
       tmTestData = _testConvnetClassifier(tmTestData, convnetThresh, convnetModel)
     end 
  
