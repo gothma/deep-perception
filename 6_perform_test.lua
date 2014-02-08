@@ -70,14 +70,14 @@ function _normalizeTestData(testData, mean, std, channels)
     testData.data[{ {},i,{},{} }]:div(std[i])
   end
   print '==> preprocessing data: normalize all three channels locally'
-  local neighborhood = image.gaussian1D(13)
+  --[=[local neighborhood = image.gaussian1D(13)
   local normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
   for c in ipairs(channels) do
     for i = 1,testData.data:size(1) do
       xlua.progress(i, testData.data:size(1))
       testData.data[{ i,{c},{},{} }] = normalization:forward(testData.data[{ i,{c},{},{} }])
     end
-  end
+  end]=]
   return testData
 end
 ----------------------------------------------------------------------------
@@ -155,11 +155,11 @@ function _createObjectsTable(locations, imgIndx)
     end
   end
   if table.getn(objects) > 0 then
-    if opt.noSuppression then
-      objectsNew = objects
-    else
+    --if opt.noSuppression then
+    --  objectsNew = objects
+    --else
       objectsNew = nonmaxima_suppression(objects)
-    end
+    --end
     write_labels('results/test', imgIndx, objectsNew)
     print('Nonmaxima removed ' .. #objects - #objectsNew .. 'patches')
     print('Found ' .. #objects .. ' matches in image ' .. imgIndx)
