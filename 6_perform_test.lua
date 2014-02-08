@@ -39,7 +39,7 @@ function _extractPatches(img, imgIndx, testScaleSize, patchSize, strideSize)
   local hw = (img:size(2) / strideSize) * (img:size(3) / strideSize)
   local tmData = torch.DoubleTensor(hw, 3, testScaleSize, testScaleSize):fill(-10) 
   local tmLoc = torch.DoubleTensor(hw, 8):fill(0)
-    
+  print('Extracting patches at '..patchSize)
   for i = 1, img:size(2), strideSize do 
     for j = 1, img:size(3), strideSize do 
       if (i + patchSize - 1 < img:size(2)) and (j + patchSize - 1 < img:size(3)) then
@@ -63,13 +63,13 @@ end
 -- this is a function for normalization of the dataset
 function _normalizeTestData(testData, mean, std, channels)
   testData.data = testData.data:float()
---  print '==> preprocessing data: normalize each feature (channel) globally'
+  print '==> preprocessing data: normalize each feature (channel) globally'
   for i,channel in ipairs(channels) do 
     xlua.progress(i, testData.data:size(1))
     testData.data[{ {},i,{},{} }]:add(-mean[i])
     testData.data[{ {},i,{},{} }]:div(std[i])
   end
-  --print '==> preprocessing data: normalize all three channels locally'
+  print '==> preprocessing data: normalize all three channels locally'
   local neighborhood = image.gaussian1D(13)
   local normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
   for c in ipairs(channels) do
@@ -83,7 +83,7 @@ end
 ----------------------------------------------------------------------------
 -- this is the function for binary classification testing the patches and also threshold them
 function _testBinaryClassifier(testData, threshValue, binaryModel)
-  --print("testing ====> binary classifier")
+  print("testing ====> binary classifier")
   for l = 1,testData.data:size(1) do
      -- disp progress
      
@@ -105,7 +105,7 @@ end
 ----------------------------------------------------------------------------
 -- this is the function for convolutional classification testing the patches and also threshold them
 function _testConvnetClassifier(testData, threshValue, convnetModel)
-  --print("testing ====> convolutional classifier")
+  print("testing ====> convolutional classifier")
   for l = 1,testData.data:size(1) do
     if (testData.locations[l][7] == 0) then
       -- disp progress

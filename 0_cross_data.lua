@@ -6,7 +6,7 @@ require 'xlua'
 cmd = torch.CmdLine()
 cmd:option('-extractfile', 'extracted_data_yuv', 'File to load the extracted data from')
 cmd:option('-classes', 8, 'number of classes used')
-opt = cmd:parse(arg or {})
+opt = opt or cmd:parse(arg or {})
 
 function _disturb(instance, chance)
   disturbed_instance = torch.Tensor():resizeAs(instance):copy(instance)
