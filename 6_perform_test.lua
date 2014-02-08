@@ -53,7 +53,7 @@ function _extractPatches(img, imgIndx, testScaleSize, patchSize, strideSize)
              locations = torch.Tensor(cnt - 1, 8)}
   for i = 1, cnt - 1 do 
     tmResult.locations[i] = tmLoc[i]
-    print(tmResult.locations[i])
+    --print(tmResult.locations[i])
     tmResult.data[i] = tmData[i]
   end 
   return tmResult
@@ -63,13 +63,13 @@ end
 -- this is a function for normalization of the dataset
 function _normalizeTestData(testData, mean, std, channels)
   testData.data = testData.data:float()
-  print '==> preprocessing data: normalize each feature (channel) globally'
+--  print '==> preprocessing data: normalize each feature (channel) globally'
   for i,channel in ipairs(channels) do 
     xlua.progress(i, testData.data:size(1))
     testData.data[{ {},i,{},{} }]:add(-mean[i])
     testData.data[{ {},i,{},{} }]:div(std[i])
   end
-  print '==> preprocessing data: normalize all three channels locally'
+  --print '==> preprocessing data: normalize all three channels locally'
   local neighborhood = image.gaussian1D(13)
   local normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
   for c in ipairs(channels) do
@@ -83,7 +83,7 @@ end
 ----------------------------------------------------------------------------
 -- this is the function for binary classification testing the patches and also threshold them
 function _testBinaryClassifier(testData, threshValue, binaryModel)
-  print("testing ====> binary classifier")
+  --print("testing ====> binary classifier")
   for l = 1,testData.data:size(1) do
      -- disp progress
      
@@ -105,7 +105,7 @@ end
 ----------------------------------------------------------------------------
 -- this is the function for convolutional classification testing the patches and also threshold them
 function _testConvnetClassifier(testData, threshValue, convnetModel)
-  print("testing ====> convolutional classifier")
+  --print("testing ====> convolutional classifier")
   for l = 1,testData.data:size(1) do
     if (testData.locations[l][7] == 0) then
       -- disp progress
@@ -141,20 +141,17 @@ function _createObjectsTable(locations, imgIndx)
   }
  local objects = {}
   for i = 1, locations:size(1) do
-    local object = {imgNum = -1, x1 = -1, x2 = -1, y1 = -1, y2 = -1, score = -1, type = -1, threshold = 0}
-    object.imgNum = locations[i][8] 
-    object.y1 = locations[i][1]
-    object.y2 = locations[i][2]
-    object.x1 = locations[i][3]
-    object.x2 = locations[i][4]
-    object.type = _typeTable[locations[i][5]]
-    object.score = locations[i][6]
-    object.threshold = locations[i][7]
     if (locations[i][7] == 0) then
+      local object = {imgNum = -1, x1 = -1, x2 = -1, y1 = -1, y2 = -1, score = -1, type = -1, threshold = 0}
+      object.imgNum = locations[i][8] 
+      object.y1 = locations[i][1]
+      object.y2 = locations[i][2]
+      object.x1 = locations[i][3]
+      object.x2 = locations[i][4]
+      object.type = _typeTable[locations[i][5]]
+      object.score = locations[i][6]
+      object.threshold = locations[i][7]
       table.insert(objects, object)
-    else 
-      print('-------------thresholded objects')
-      print(object) 
     end
   end
   if table.getn(objects) > 0 then  
