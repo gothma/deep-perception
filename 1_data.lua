@@ -53,8 +53,8 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
     trainData.data[{ {},i,{},{} }]:add(-mean[i])
     trainData.data[{ {},i,{},{} }]:div(std[i])
   end
-  torch.save('mean_train.t7', mean);
-  torch.save('stdtrain.t7', std);
+  torch.save('tmp_mean.t7', mean);
+  torch.save('tmp_std.t7', std);
   for i,channel in ipairs(channels) do 
     testData.data[{ {},i,{},{} }]:add(-mean[i])
     testData.data[{ {},i,{},{} }]:div(std[i])

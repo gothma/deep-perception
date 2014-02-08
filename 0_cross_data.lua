@@ -3,7 +3,10 @@ require 'torch'
 require 'nn'
 require 'xlua'
 
-
+cmd = torch.CmdLine()
+cmd:option('-extractfile', 'extracted_data_yuv', 'File to load the extracted data from')
+cmd:option('-classes', 8, 'number of classes used')
+opt = cmd:parse(arg or {})
 
 function _disturb(instance, chance)
   disturbed_instance = torch.Tensor():resizeAs(instance):copy(instance)
@@ -31,7 +34,7 @@ if not opt or opt.mode ~= 'crossval' then
   }
   local trdbSize = trainData.data:size()
 
-  local classes = 2
+  local classes = opt.classes
 
   local validation_set_size = 100
   validationData = {
@@ -87,8 +90,8 @@ if not opt or opt.mode ~= 'crossval' then
   trainData.labels = labelTen--[{{2000,4000}}]
   --------------------------------------------
 
-  torch.save('kitti_extended.t7', trainData)
-  torch.save('kitti_valid.t7', validationData)
+  torch.save(opt.extractfile .. '.train', trainData)
+  torch.save(opt.extractfile .. '.valid', validationData)
 
 else
   print('==> Distort and divide up into ' .. opt.folds .. ' folds')
