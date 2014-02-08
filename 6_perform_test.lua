@@ -96,7 +96,7 @@ function _testBinaryClassifier(testData, threshValue, binaryModel)
      local tmMax, tmIndx = torch.max(pred,  1)
      testData.locations[l][5] = tmIndx[1]
      testData.locations[l][6] = tmMax[1] 
-     if tmMax[1] > threshValue then 
+     if tmMax[1] < threshValue then 
        testData.locations[l][7] = 1
      end
   end
@@ -119,7 +119,7 @@ function _testConvnetClassifier(testData, threshValue, convnetModel)
       local tmMax, tmIndx = torch.max(pred, 1)
       testData.locations[l][5] = tmIndx[1]
       testData.locations[l][6] = tmMax[1] 
-      if tmMax[1] > threshValue then 
+      if tmMax[1] < threshValue then 
         testData.locations[l][7] = 1
       end
     end
