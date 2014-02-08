@@ -66,11 +66,11 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 		model:add(nn.SpatialConvolutionMM(nstatesBinary[1], nstatesBinary[2], filtsize, filtsize))
 		model:add(nn.Tanh())
 		model:add(nn.SpatialLPPooling(nstatesBinary[2], 2, poolsize, poolsize, poolsize, poolsize))
-		model:add(nn.SpatialSubtractiveNormalization(nstates[2], normkernel))
+		model:add(nn.SpatialSubtractiveNormalization(nstatesBinary[2], normkernel))
 
 		-- stage 3 : standard 2-layer neural network
 		model:add(nn.Reshape(nstatesBinary[2] * filtsize * filtsize))
-		model:add(nn.Linear(nstatesBinary[2] * filtsize * filtsize, nstates[3]))
+		model:add(nn.Linear(nstatesBinary[2] * filtsize * filtsize, nstatesBinary[3]))
 		model:add(nn.Tanh())
 		model:add(nn.Linear(nstatesBinary[3], noutputs)) 
 
