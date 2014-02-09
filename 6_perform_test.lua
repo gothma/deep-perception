@@ -37,7 +37,7 @@ end
 function _extractPatches(img, imgIndx, testScaleSize, patchSize, strideSize) 
   local cnt = 1   
   local hw = (img:size(2) / strideSize) * (img:size(3) / strideSize)
-  local tmData = torch.DoubleTensor(hw, 3, testScaleSize, testScaleSize):fill(-10) 
+  local tmData = torch.DoubleTensor(hw, img:size(1), testScaleSize, testScaleSize):fill(-10) 
   local tmLoc = torch.DoubleTensor(hw, 8):fill(0)
   print('Extracting patches at '..patchSize)
   for i = 1, img:size(2), strideSize do 
@@ -49,7 +49,7 @@ function _extractPatches(img, imgIndx, testScaleSize, patchSize, strideSize)
       end 
     end
   end  
-  local tmResult = {data = torch.DoubleTensor(cnt - 1,3, testScaleSize, testScaleSize),
+  local tmResult = {data = torch.DoubleTensor(cnt - 1,img:size(1), testScaleSize, testScaleSize),
              locations = torch.Tensor(cnt - 1, 8)}
   for i = 1, cnt - 1 do 
     tmResult.locations[i] = tmLoc[i]
@@ -206,7 +206,7 @@ convnetThresh = opt.convnetThresh
 -----
 -- this is function for computing the location number for all patch size of all images
 --local allLocCnt = _computeTensorSize(opt.indxS, opt.indxE, opt.initPatchSize
-                                   , opt.patchFactor, opt.strideFactor, opt.imgFilePath)
+--                                   , opt.patchFactor, opt.strideFactor, opt.imgFilePath)
 --- ofter testing an image only store the neccessary information
 --[1] = patch index number
 --[2][8] = image index 
