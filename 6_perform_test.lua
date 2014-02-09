@@ -218,6 +218,7 @@ for imgIndx = opt.indxS, opt.indxE do
   
   xlua.progress(imgIndx, opt.indxE - opt.indxS +1)
   local img = read_image(opt.imgFilePath, imgIndx)
+  img = image.rgb2yuv(img)
   local imgMinSize = img:size(2)
   if imgMinSize > img:size(3) then 
     imgMinSize = img:size(3)
