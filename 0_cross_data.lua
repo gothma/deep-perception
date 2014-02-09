@@ -6,6 +6,7 @@ require 'xlua'
 cmd = torch.CmdLine()
 cmd:option('-extractfile', 'extracted_data_yuv', 'File to load the extracted data from')
 cmd:option('-classes', 8, 'number of classes used')
+cmd:option('-validationSize', 100, 'number of samples per class in the validation set')
 opt = opt or cmd:parse(arg or {})
 
 function _disturb(instance, chance)
@@ -33,10 +34,9 @@ if not opt or opt.mode ~= 'crossval' then
     labels = loaded.labels
   }
   local trdbSize = trainData.data:size()
-
   local classes = opt.classes
 
-  local validation_set_size = 100
+  local validation_set_size = opt.validationSize
   validationData = {
     data = torch.DoubleTensor(validation_set_size * classes * 2,trdbSize[2],trdbSize[3],trdbSize[4]),--:transpose(3,4),
     labels = torch.ByteTensor(validation_set_size * classes * 2)
@@ -47,7 +47,9 @@ if not opt or opt.mode ~= 'crossval' then
   local tmdatanum = trdbSize[1]
   local indx =0
   local dataTen = torch.DoubleTensor((trdbSize[1] - (validation_set_size * classes)) * 2 ,trdbSize[2],
-                           trdbSize[3],trdbSize[3]) 
+                           trdbSize[3],trdbSize[3])
+
+
   local labelTen = torch.Tensor((trdbSize[1] - (validation_set_size * classes)) * 2)  
 
   local img = trainData.data[1]
@@ -76,11 +78,11 @@ if not opt or opt.mode ~= 'crossval' then
       hold_back_counter[imgLbl] = hold_back_counter[imgLbl] + 1 
     else     
       -- add original image
-        i = i + 1
+      i = i + 1
       dataTen[i + indx] = img
       labelTen[i + indx] = imgLbl
 
-      --add mirroed image  
+      --add mirroed image
       indx = indx + 1 -- 1
       dataTen[i + indx] = imgM
       labelTen[i + indx] = imgLbl
