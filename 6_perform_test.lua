@@ -155,7 +155,7 @@ function _createObjectsTable(locations, imgIndx)
     end
   end
   if table.getn(objects) > 0 then
-    if opt.nonMaxima = 0 then
+    if opt.nonMaxima == 0 then
       objectsNew = nonmaxima_suppression(objects)
     else 
       objectsNew = nonmaxima_merge(objects) 
