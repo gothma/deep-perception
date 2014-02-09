@@ -54,7 +54,7 @@ cmd:option('-std', 'train_std.t7', 'std of train images should be tensor')
 cmd:option('-initPatchSize', 64, ' initialize size for patches')
 cmd:option('-testScaleSize', 32, 'the scale number which needed for testing the image')
 cmd:option('-imgFilePath', 'data/images/testing/image_2',' path for loading test images  [ default = data/images/resting/image_2]')
-cmd:option('-noSuppression', 'If set the non-maxima suppression is turned off')
+cmd:option('-nonMaxima', 0, ' values | 0 = Non Maxima Sippression | 1 = Non Maxima Merge [ default = 0] ')
                            
 opt = cmd:parse(arg or {})
 
