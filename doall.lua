@@ -55,6 +55,7 @@ cmd:option('-initPatchSize', 64, ' initialize size for patches')
 cmd:option('-testScaleSize', 32, 'the scale number which needed for testing the image')
 cmd:option('-imgFilePath', 'data/images/testing/image_2',' path for loading test images  [ default = data/images/resting/image_2]')
 cmd:option('-nonMaxima', 0, ' values | 0 = Non Maxima Sippression | 1 = Non Maxima Merge [ default = 0] ')
+cmd:option('-color', 'yuv', 'The color mode with should be extracted [yuv|y|rgb]')
                            
 opt = cmd:parse(arg or {})
 

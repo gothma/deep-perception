@@ -166,8 +166,21 @@ function _createObjectsTable(locations, imgIndx)
   else print('No matches in image ' .. imgIndx)
   end
 end 
+
+
+local _color = {
+  rgb=function(i) return i end,
+  yuv=image.rgb2yuv,
+  y=image.rgb2y
+}
+
+local _channels = {
+  rgb={'r','g','b'},
+  yuv={'y','u','v'},
+  y={'y'}
+}
 ----------------------------------------------------------------------------
---[=[cmd = torch.CmdLine()
+--[=[cmd = torch.Cmd'L',ine()
 -- test mode data setting 
 cmd:option('-binaryModel', nil, 'path to binary classifier model file')
 cmd:option('-convnetModel', nil, ' path to convolutional classifier model file')
@@ -192,7 +205,7 @@ binaryThresh = opt.binaryThresh
 convnetThresh = opt.convnetThresh
 -----
 -- this is function for computing the location number for all patch size of all images
-local allLocCnt = _computeTensorSize(opt.indxS, opt.indxE, opt.initPatchSize
+--local allLocCnt = _computeTensorSize(opt.indxS, opt.indxE, opt.initPatchSize
                                    , opt.patchFactor, opt.strideFactor, opt.imgFilePath)
 --- ofter testing an image only store the neccessary information
 --[1] = patch index number
@@ -201,7 +214,7 @@ local allLocCnt = _computeTensorSize(opt.indxS, opt.indxE, opt.initPatchSize
 --[2][5] predicted label
 --[2][6] prediction value 
 --[2][7] ? 1 = thresholded(omitted) , 0 = not thresholded
-local testData = {locations = torch.Tensor(allLocCnt, 7)}
+--local testData = {locations = torch.Tensor(allLocCnt, 7)}
                   --data = torch.DoubleTensor(opt.indxE - opt.indxS + 1, 1, 3, patch_w, patch_h),
 local locIndx = 1 -- the index to latest extracted location orverall 
 local mean = torch.load(opt.mean)
@@ -218,13 +231,13 @@ for imgIndx = opt.indxS, opt.indxE do
   
   xlua.progress(imgIndx, opt.indxE - opt.indxS +1)
   local img = read_image(opt.imgFilePath, imgIndx)
-  img = image.rgb2yuv(img)
+  img = _color[opt.color](img)
   local imgMinSize = img:size(2)
   if imgMinSize > img:size(3) then 
     imgMinSize = img:size(3)
   end
   local patchSize = 0 
-  local channels = {'y','u','v'}
+  local channels = _channels[opt.color]
 
   while (patchSize * opt.patchFactor < imgMinSize) do
     patchSize = patchSize * opt.patchFactor
