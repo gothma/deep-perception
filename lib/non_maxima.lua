@@ -85,7 +85,7 @@ merge_objects = function (obj1 , obj2)
   
   if (area1 > area2) then 
      objOut = obj1
-     if (objOut.x1 > obj2.x1) then
+    --[=[ if (objOut.x1 > obj2.x1) then
        objOut.x1 = obj2.x1
      end 
      if (objOut.x2 < obj2.x2) then
@@ -96,10 +96,10 @@ merge_objects = function (obj1 , obj2)
      end 
      if (objOut.y2 < obj2.y2) then
        objOut.y2 = obj2.y2
-     end
+     end--]=]
   else 
      objOut = obj2
-     if (objOut.x1 > obj1.x1) then
+    --[=[ if (objOut.x1 > obj1.x1) then
        objOut.x1 = obj1.x1
      end 
      if (objOut.x2 < obj1.x2) then
@@ -110,7 +110,7 @@ merge_objects = function (obj1 , obj2)
      end 
      if (objOut.y2 < obj1.y2) then
        objOut.y2 = obj1.y2
-     end
+     end ]=]
   end 
   return objOut
 end
@@ -120,11 +120,13 @@ nonmaxima_merge = function (objects)
     objects[i].is_maximum = true
   end
   for i=1,#objects do
-    for j=i+1,#objects do
-      local overlap = overlap_area (objects[i], objects[j])
-      if (overlap>0.2) then -- and objects[i].type==objects[j].type) then
+    for j=1,#objects do
+      if (objects[j].is_maximun) then
+        local overlap = overlap_area (objects[i], objects[j])
+        if (overlap>0.2) then -- and objects[i].type==objects[j].type) then
           objects[j].is_maximum = false
           objects[i].is_maximum = merge_objects(objects[i], objects[j])
+        end
       end
     end
   end
