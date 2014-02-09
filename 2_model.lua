@@ -21,7 +21,7 @@ nhiddens = ninputs / 2
 
 -- hidden units, filter sizes (for ConvNet only):
 nstates = {64,64,128}
-nstatesBinary = {32,32,64}
+nstatesBinary = nstates--{32,32,64}
 filtsize = 5
 poolsize = 2
 normkernel = image.gaussian1D(7)
