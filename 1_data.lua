@@ -36,9 +36,13 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
      trsize = 999
      tesize = 300
   end 
-  channels = {'y','u','v'}
-  mean = {0,0,0}
-  std = {0,0,0}
+  if (trainData.data:size(2) == 3) then
+    channels = {'y', 'u', 'v'}
+  elseif (trainData.data:size(2) == 1) then
+    channels = {'y'}
+  end
+  mean = {}
+  std = {}
   ---------------------------------------------------------------------
   print '==> preprocessing data'
 

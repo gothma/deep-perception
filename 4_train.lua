@@ -116,6 +116,7 @@ require 'optim'   -- an optimization package, for online and batch methods
                                 --  print(inputs:size())
                                 --  print(inputs[1]:size()) 
 				  local output = model:forward(inputs[i])
+				  print(output)
                                     
 				  local err = criterion:forward(output, targets[i])
 				  f = f + err
