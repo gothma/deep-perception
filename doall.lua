@@ -34,7 +34,7 @@ cmd:option('-epoches', 200, 'the number of the epoches we need to do')
 cmd:option('-type', 'double', 'type: double | float | cuda')
 cmd:option('-multinet', 'multinet_model', ' multiclass network learned model file name "*.net"')
 cmd:option('-binarynet', 'binarynet_model', ' binaty network learned model file name "*.net"')
-cmd:option('-mode', 'test', ' the operation mode type : train | testSimple | testCascade | crossval')
+cmd:option('-mode', 'test', ' the operation mode type : train | valid | testCascade | crossval')
 cmd:option('-fold', 0, 'fold which is used for testing')
 cmd:option('-folds', 0, 'if set it will do k fold cross validation')
 cmd:option('-trainThreshold', 1e-3, ' the threshold value for error dicreasing')
@@ -55,6 +55,7 @@ cmd:option('-initPatchSize', 64, ' initialize size for patches')
 cmd:option('-testScaleSize', 32, 'the scale number which needed for testing the image')
 cmd:option('-imgFilePath', 'data/images/testing/image_2',' path for loading test images  [ default = data/images/resting/image_2]')
 cmd:option('-nonMaxima', 0, ' values | 0 = Non Maxima Sippression | 1 = Non Maxima Merge [ default = 0] ')
+cmd:option('-color', 'yuv', 'The color mode with should be extracted [yuv|y|rgb]')
                            
 opt = cmd:parse(arg or {})
 
@@ -113,4 +114,12 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 elseif opt.mode == 'test'  then
   
   dofile '6_perform_test.lua'
+elseif opt.mode == 'valid' then 
+
+  dofile '1_data.lua'
+  dofile '2_model.lua'
+  dofile '4_train.lua'
+  dofile '5_test.lua'
+  test()
 end
+

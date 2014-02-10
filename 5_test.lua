@@ -21,7 +21,7 @@ function test()
    
   print('==> testing on test set:')
  
-  if opt.mode == 'train' or opt.mode == 'crossval' then
+  if opt.mode == 'train' or opt.mode == 'crossval' or opt.mode == 'valid' then
     for t = 1,testData:size() do
     -- disp progress
       xlua.progress(t, testData:size())
