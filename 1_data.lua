@@ -5,7 +5,7 @@ require 'image'
 require 'nn'
 require 'xlua'
 
-if  opt.mode == 'train' then
+if  opt.mode == 'train' or opt.mode == 'valid' then
 ----------------------------------------------------------------------
   print '==> loading dataset'
   train_file = opt.trainfile 
@@ -26,7 +26,7 @@ if  opt.mode == 'train' then
   }
 end
    
-if opt.mode == 'train' or opt.mode == 'crossval' then   
+if opt.mode == 'train' or opt.mode == 'crossval' or opt.mode == 'valid' then   
 
   ---------------------------------------------------------------
   if opt.size == 'full' then

@@ -77,8 +77,8 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
 	elseif opt.model then
 		model = torch.load(opt.model)
 	end
---elseif  opt.mode == 'test' then 
-  --    model = torch.load(opt.network)
+elseif  opt.mode == 'valid' then 
+      model = torch.load(opt.multinet)
 end
 
 ----------------------------------------------------------------------
