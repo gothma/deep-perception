@@ -59,6 +59,29 @@ Smaller network of same structure
   More time consuming
 <!-- Images here -->
 
+
+----
+
+### Results
+#### Multi Label
+![](plot_mulit.txt.png)
+
+ + average row correct: 85.812500491738% 
+ + average rowUcol correct (VOC measure): 75.458907708526% 
+ + global correct: 85.8125% 
+
+----
+
+#### Binary
+
+
+    [[     196       4]   98.000% 	[class: 1]
+     [       2     198]]  99.000% 	[class: 2]
+ 
+   + average row correct: 98.500001430511% 
+   + average rowUcol correct (VOC measure): 97.044262290001% 
+   + global correct: 98.5%
+
 ----
 
 ## Testing
@@ -79,7 +102,13 @@ Smaller network of same structure
 ## Results
 
 ![Intermediate](20.jpg)
+
+----
+
 ![Good](1344.jpg)
+
+----
+
 ![Bad](9.jpg)
 
 
