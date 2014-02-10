@@ -5,7 +5,7 @@ require 'image'
 require 'nn'
 require 'xlua'
 
-if  opt.mode == 'train' then
+if  opt.mode == 'train' or opt.mode == 'valid' then
 ----------------------------------------------------------------------
   print '==> loading dataset'
   train_file = opt.trainfile 
@@ -26,7 +26,7 @@ if  opt.mode == 'train' then
   }
 end
    
-if opt.mode == 'train' or opt.mode == 'crossval' then   
+if opt.mode == 'train' or opt.mode == 'crossval' or opt.mode == 'valid' then   
 
   ---------------------------------------------------------------
   if opt.size == 'full' then
@@ -36,9 +36,13 @@ if opt.mode == 'train' or opt.mode == 'crossval' then
      trsize = 999
      tesize = 300
   end 
-  channels = {'y','u','v'}
-  mean = {0,0,0}
-  std = {0,0,0}
+  if (trainData.data:size(2) == 3) then
+    channels = {'y', 'u', 'v'}
+  elseif (trainData.data:size(2) == 1) then
+    channels = {'y'}
+  end
+  mean = {}
+  std = {}
   ---------------------------------------------------------------------
   print '==> preprocessing data'
 

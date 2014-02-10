@@ -13,6 +13,7 @@ cmd:option('-images', 'data/images/training/image_2', 'folder containing kitti i
 cmd:option('-labels', 'data/labels/label_2', 'folder containing kitti labels')
 cmd:option('-dontcare', false, 'include DontCare labels')
 cmd:option('-save', 'extracted_data_yuv.t7', 'the file where the images should be saved')
+cmd:option('-color', 'yuv', 'The color mode with should be extracted [yuv|y|rgb]')
 
 opt = opt or cmd:parse(arg or {})
 
@@ -29,6 +30,18 @@ _typeTable = {
   DontCare=9
 }
 
+_color = {
+  rgb=function(i) return i end,
+  yuv=image.rgb2yuv,
+  y=image.rgb2y
+}
+
+_channels = {
+  rgb=3,
+  yuv=3,
+  y=1
+}
+
 local patch_w = opt.length
 local patch_h = opt.length
 local totalPatches = 80256
@@ -38,7 +51,7 @@ if opt.class == 'binary' then
 end
 
 trainData = {
-  data = torch.DoubleTensor(totalPatches,3,patch_w,patch_h),
+  data = torch.DoubleTensor(totalPatches,_channels[opt.color],patch_w,patch_h),
   labels = torch.ByteTensor(totalPatches):fill(0), 
   occluded = torch.ByteTensor(totalPatches):fill(0)
 }
@@ -88,7 +101,7 @@ for i =0, opt.size do
           local imgSub = image.crop(img,lbltbl[j].x1 + 1, lbltbl[j].y1 + 1, lbltbl[j].x2, lbltbl[j].y2)
           -- Add new resize function into the resize table and call them via the parameters
           local emptyImgSub = resize[opt.crop](imgSub)
-          emptyImgSub = image.rgb2yuv(emptyImgSub)
+          emptyImgSub = _color[opt.color](emptyImgSub)
 
           if binaryClass then imgSlbl = 1
           else imgSlbl = _typeTable[lbltbl[j].type] end
@@ -134,7 +147,7 @@ for i =0, opt.size do
 
             if (tostring(noneImage:mean()) ~= 'nan') then
               cntDt = cntDt + 1
-              trainData.data[cntDt] = image.rgb2yuv(resize[opt.crop](noneImage))
+              trainData.data[cntDt] = _color[opt.color](resize[opt.crop](noneImage))
               trainData.labels[cntDt] = 2 -- none class
               trainData.occluded[cntDt] = 3 -- unknown occlution
               --print('success')
