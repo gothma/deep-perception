@@ -78,9 +78,9 @@ Smaller network of same structure
 
 ## Results
 
-![](20.jpg)
-![](1344.jpg)
-![9](9.jpg)
+![Intermediate](20.jpg)
+![Good](1344.jpg)
+![Bad](9.jpg)
 
 
 
