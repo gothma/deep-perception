@@ -1,0 +1,53 @@
+t 1 sample = 7.64493227005ms	
+ConfusionMatrix:
+[[     196       4]   98.000% 	[class: 1]
+ [       2     198]]  99.000% 	[class: 2]
+ + average row correct: 98.500001430511% 
+ + average rowUcol correct (VOC measure): 97.044262290001% 
+ + global correct: 98.5% {
+  prediction_1d : FloatTensor - size: 2
+  valids : FloatTensor - size: 2
+  classes : table: 0x401f24c0 {
+      1 : 1
+      2 : 2
+    }
+  mat : FloatTensor - size: 2x2
+  unionvalids : FloatTensor - size: 2
+  nclasses : 2
+  totalValid : 0.985
+  averageUnionValid : 0.97044262290001
+  averageValid : 0.98500001430511
+}
+t 1 sample = 22.205483168364ms	
+ConfusionMatrix:
+[[     197       3       0       0       0       0       0       0]   98.500% 	[class: 1]
+ [      29     163       0       1       1       0       3       3]   81.500% 	[class: 2]
+ [      10       3     182       0       2       0       0       3]   91.000% 	[class: 3]
+ [       6       0       0     182      12       0       0       0]   91.000% 	[class: 4]
+ [       0       0       0       1     198       0       1       0]   99.000% 	[class: 5]
+ [      26       1       1      21      47      95       7       2]   47.500% 	[class: 6]
+ [      20       7       0       6       0       0     165       2]   82.500% 	[class: 7]
+ [       6       2       0       0       0       0       1     191]]  95.500% 	[class: 8]
+ + average row correct: 85.812500491738% 
+ + average rowUcol correct (VOC measure): 75.458907708526% 
+ + global correct: 85.8125% {
+  prediction_1d : FloatTensor - size: 8
+  valids : FloatTensor - size: 8
+  classes : table: 0x40356790 {
+      1 : 1
+      2 : 2
+      3 : 3
+      4 : 4
+      5 : 5
+      6 : 6
+      7 : 7
+      8 : 8
+    }
+  mat : FloatTensor - size: 8x8
+  unionvalids : FloatTensor - size: 8
+  nclasses : 8
+  totalValid : 0.858125
+  averageUnionValid : 0.75458907708526
+  averageValid : 0.85812500491738
+}
+
