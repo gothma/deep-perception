@@ -1,12 +1,11 @@
 # Deep Perception
-## Ramin & Martin
+## Ramin Zohouri <br> Martin Goth
 
 ----
 
 ## Models
 ### Multilabel model
 * 8-class 
-* DontCare not included
 * 64, 64, 128
 
 3 stage convolutional network
@@ -17,6 +16,7 @@
 
 ----
 
+## Models
 ### Binary model
 
 * Object / None
@@ -42,13 +42,18 @@ Smaller network of same structure
 
 ----
 
+## Data extraction
 ### None patches
 
 * Extract square image for each object
-* Could contain object but probability for full hit is rather low.
 * Global normalization parameters for testing extracted
 * Tried extraction in greyscale space
-<!-- Explanation graphic here -->
+
+---
+
+* Could contain object but probability for full hit is rather low.
+
+![](extract.png)
 
 ----
 
@@ -66,21 +71,19 @@ Smaller network of same structure
 #### Multi Label
 ![](plot_mulit.txt.png)
 
- + average row correct: 85.812500491738% 
- + average rowUcol correct (VOC measure): 75.458907708526% 
- + global correct: 85.8125% 
+---
 
-----
+    average row correct: 85.81% 
+    global correct: 85.81% 
 
 #### Binary
 
 
-    [[     196       4]   98.000% 	[class: 1]
-     [       2     198]]  99.000% 	[class: 2]
+     [ 196    4]  98.000% 	[Object]
+     [   2  198]  99.000% 	[ None ]
  
-   + average row correct: 98.500001430511% 
-   + average rowUcol correct (VOC measure): 97.044262290001% 
-   + global correct: 98.5%
+     average row correct: 98.50% 
+     global correct: 98.50%
 
 ----
 
@@ -91,7 +94,10 @@ Smaller network of same structure
 * Stride factor of 0.1x
 * 11176 samples per image
 
+----
+
 ### Pipeline
+![](workflow.jpg)
 
 * Label samples that pass binary classifier and threshold
 * Non maxima suppression at the very end
@@ -99,18 +105,24 @@ Smaller network of same structure
 
 ----
 
-## Results
+## Good Results
 
 ![Intermediate](20.jpg)
-
-----
-
 ![Good](1344.jpg)
 
 ----
 
-![Bad](9.jpg)
+## Bad Results
 
+![Bad](9.jpg)
+![Bad](2092.png)
+
+---- 
+
+# Thank you!
+
+## For your attention
+## For your help and collabotation
 
 
 

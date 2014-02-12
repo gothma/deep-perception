@@ -1,13 +1,12 @@
 require 'lib/kitti_tools'
 require 'image'
+require 'xlua'
 
-
-if #arg ~= 2 then
-  print('Usage: drawLabels')
+for i, ind in ipairs(arg) do
+    xlua.progress(i, #arg)
+    img = read_image('data/images/training/image_2', ind)
+    labels = read_labels('data/training/label_2', ind)
+    annotated = add_labels_to_image(img, labels, colormap_kitti)
+    image.savePNG('results/' .. ind .. '.png', annotated)
 end
-
-i = read_image('data/images/testing/image_2', arg[1])
-l = read_labels('results/test', arg[1])
-j = add_labels_to_image(i, l, colormap_kitti)
-image.display(j)
 
